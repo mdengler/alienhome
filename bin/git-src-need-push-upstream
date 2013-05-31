@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+        set -x
+
+if ( /bin/true || nm-online -xq || ping -qnc1 -w2 debian.org ) > /dev/null 2>&1 ; then
+    exitval=0
+    for gitdir in ~/src/*/.git ; do
+        cd $gitdir/.. && git push -n -q 2> /dev/null
+        thisexitval=$?
+        exitval=$( expr $thisexitval + $?)
+        
+    done
+else
+    exitval=1
+    echo "not connected"
+fi
+
+exit $exitval
+

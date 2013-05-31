@@ -1,0 +1,1 @@
+xosview +cpu -load +mem -swap -battery +net -page -int -xrm "xosview*diskBandwidth: 300000" &

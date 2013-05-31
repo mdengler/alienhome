@@ -1,0 +1,49 @@
+# see github.com/mdengler/gcalcli
+
+[gcalcli]
+user: mdengler@gmail.com
+border-color: brightblack
+date-color: white
+pw: please enter your password
+
+24hr: true
+cal: "Mary Dengler"#red, "Martin Dengler"#brightblue, "MMMinLondon"#green
+
+
+# cals: <type>
+# cal: <name>[#color], <name>[#color], ...
+# details: <true|false>
+# ignore-started: <true|false>
+# width: <width>
+# mon: <true|false>
+# nd: <true|false>
+
+cal-owner-color: magenta
+#cal-editor-color: 
+#cal-contributor-color:
+cal-read-color:  blue
+#cal-freebusy-color: 
+
+# from the source:
+# colors = { 'default'       : CLR_NRM(),
+#            'black'         : CLR_BLK(),
+#            'brightblack'   : CLR_BRBLK(),
+#            'red'           : CLR_RED(),
+#            'brightred'     : CLR_BRRED(),
+#            'green'         : CLR_GRN(),
+#            'brightgreen'   : CLR_BRGRN(),
+#            'yellow'        : CLR_YLW(),
+#            'brightyellow'  : CLR_BRYLW(),
+#            'blue'          : CLR_BLU(),
+#            'brightblue'    : CLR_BRBLU(),
+#            'magenta'       : CLR_MAG(),
+#            'brightmagenta' : CLR_BRMAG(),
+#            'cyan'          : CLR_CYN(),
+#            'brightcyan'    : CLR_BRCYN(),
+#            'white'         : CLR_WHT(),
+#            'brightwhite'   : CLR_BRWHT() }
+
+
+# date-color: <color>
+# border-color: <color>
+

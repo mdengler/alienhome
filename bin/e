@@ -1,0 +1,10 @@
+E_CLIENT_ARGS="$@"
+if [ -z "$E_CLIENT_ARGS" ] ; then
+   E_CLIENT_ARGS="."
+fi
+if [ -n "$DISPLAY" ] ; then
+   E_FRAME_ARG=-c
+else
+   E_FRAME_ARG=
+fi
+emacsclient --no-wait $E_FRAME_ARG $E_CLIENT_ARGS >/dev/null 2>&1 || EMACS_LOAD_LIBRARIES=1 TERM=xterm-256color emacs "$@" &

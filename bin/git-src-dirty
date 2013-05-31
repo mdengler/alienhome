@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+for gitdir in ~/src/*/.git ; do
+    ( cd $gitdir/.. &&
+        git status | grep -vq "On branch master\|nothing to commit" && echo $gitdir )
+done

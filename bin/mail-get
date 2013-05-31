@@ -1,0 +1,8 @@
+#!/bin/bash
+
+$(dirname $(readlink -f $0))/offlineimap-if-connected &
+
+/usr/bin/time getmail --dont-delete &
+
+disown
+

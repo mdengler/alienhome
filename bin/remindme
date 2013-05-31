@@ -1,0 +1,50 @@
+#!/usr/bin/env python
+"""
+usage: remindme [at|on] at-compatible-strings [about|to] mail-subject-and-body
+
+schedules an email using at
+
+examples
+
+remindme tuesday to pay for hamburgers
+remindme at 17:00 about buying milk
+remindme on 15 april to file taxes
+"""
+
+import os
+import pwd
+import sys
+
+args = sys.argv[1:]
+
+if args[0] == "at" or args[0] == "on":
+   args = args[1:]
+
+aboutidx = -1
+if "about" in args:
+   aboutidx =args.index("about")
+toidx = -1
+if "to" in args:
+   toidx =args.index("to")
+
+if aboutidx == -1 and toidx == -1:
+   print __doc__
+   sys.exit(1)
+
+parts_split = max(aboutidx, toidx) # FUTURE: a bit too fragile
+
+at_parts = args[:parts_split]
+at_cmd = "at %s" % (" ".join(at_parts))
+
+my_uid = os.geteuid()
+my_username = pwd.getpwuid(my_uid)[0]
+
+mail_parts = args[parts_split + 1:]
+mail_cmd = "echo | mail -s '%s' %s" % (" ".join(mail_parts), my_username)
+
+at_stdin, at_stdout, at_stderr = os.popen3(at_cmd)
+at_stdin.write(mail_cmd)
+at_stdin.write(os.linesep)
+at_stdin.close()
+
+
