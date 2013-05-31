@@ -42,6 +42,7 @@
  '(graphviz-dot-preview-extension "gif")
  '(graphviz-dot-view-command "dotty %s")
  '(highlight-symbol-idle-delay 0)
+ '(highlight-symbol-only-when-region-active-p t)
  '(indent-tabs-mode nil)
  '(inferior-lisp-program "sbcl")
  '(inhibit-startup-echo-area-message "martin")
@@ -104,7 +105,7 @@
  '(blank-tab-face ((((class mono)) :inverse-video t) (t (:background "Red" :foreground "White"))))
  '(font-lock-doc-string-face ((((class color) (background light)) (:foreground "orange"))))
  '(font-lock-string-face ((((class color) (background light)) (:foreground "darkgreen"))))
- '(highlight-symbol-face ((t (:background "light sea green"))))
+ '(highlight-symbol-face ((t (:background "orange"))))
  '(show-paren-match ((((class color) (background light)) (:background "green"))))
  '(trailing-whitespace ((((class color) (background light)) (:background "lightyellow")))))
 
@@ -410,7 +411,7 @@
 ;;   (set-face-attribute 'mode-line-inactive nil :box nil))
 
 (with-library highlight-symbol
-  (add-hook 'python-mode-hook 'highlight-symbol-mode))
+  (add-hook 'python-mode-hook highlight-symbol-mode))
 
 ;; probably should be the last library loaded
 (with-library ffap (ffap-bindings))

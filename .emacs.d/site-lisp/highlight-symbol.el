@@ -138,6 +138,19 @@ highlighting the symbols will use these colors in order."
   :type 'boolean
   :group 'highlight-symbol)
 
+(defcustom highlight-symbol-only-when-region-active-p nil
+  "*Whether or not to only highlight the region when one
+exists (otherwise there will be no highlighting, even if there is
+a symbol at point)"
+  :type 'boolean
+  :group 'highlight-symbol)
+
+(defcustom highlight-symbol-max-region-size 32
+  "*How large the region can be if it is to be highlighted;
+regions larger than this will not be highlighted"
+  :type 'number
+  :group 'highlight-symbol)
+
 (defvar highlight-symbol-color-index 0)
 (make-variable-buffer-local 'highlight-symbol-color-index)
 
@@ -248,12 +261,24 @@ element in of `highlight-symbol-faces'."
   (goto-char (beginning-of-thing 'symbol))
   (query-replace-regexp (highlight-symbol-get-symbol) replacement))
 
+(defun highlight-symbol-get-region-if-active ()
+  "Return the string (no-properties) of current region if it's active"
+   "Return the string (no-properties) of current region if it's active"
+  (interactive)
+  (let ((start (region-beginning))
+        (end (region-end)))
+    ;(message "region is %d %d (%s)" start end (use-region-p))
+    (when (and (use-region-p) (<= (- end start) highlight-symbol-max-region-size))
+      (buffer-substring-no-properties start end))))
+
 (defun highlight-symbol-get-symbol ()
   "Return a regular expression dandifying the symbol at point."
-  (let ((symbol (thing-at-point 'symbol)))
-    (when symbol (concat (car highlight-symbol-border-pattern)
-                         (regexp-quote symbol)
-                         (cdr highlight-symbol-border-pattern)))))
+  (if highlight-symbol-only-when-region-active-p
+      (highlight-symbol-get-region-if-active)
+    (let ((symbol (thing-at-point 'symbol)))
+      (when symbol (concat (car highlight-symbol-border-pattern)
+                           (regexp-quote symbol)
+                           (cdr highlight-symbol-border-pattern))))))
 
 (defun highlight-symbol-temp-highlight ()
   "Highlight the current symbol until a command is executed."
