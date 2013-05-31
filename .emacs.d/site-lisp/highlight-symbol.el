@@ -133,7 +133,7 @@ highlighting the symbols will use these colors in order."
   :group 'highlight-symbol)
 
 (defcustom highlight-symbol-on-navigation-p nil
-  "*Wether or not to temporary highlight the symbol when using
+  "*Whether or not to temporarily highlight the symbol when using
 `highlight-symbol-jump' family of functions."
   :type 'boolean
   :group 'highlight-symbol)
