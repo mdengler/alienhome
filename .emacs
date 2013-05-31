@@ -1,5 +1,3 @@
-;;$Header: /home/martin/RCS/.emacs,v 1.19 2008/07/19 19:29:39 martin Exp $
-
 (require 'cl)
 
 (custom-set-variables
@@ -67,6 +65,8 @@
  '(pr-ps-printer-alist (quote ((default "lpr" nil "-P" ""))))
  '(ps-paper-type (quote a4))
  '(ps-printer-name nil)
+ '(python-python-command "python-python-command.bat")
+ '(remember-mailbox "~/Maildir/todo")
  '(remote-shell-program "ssh")
  '(safe-local-variable-values (quote ((coding-system . utf-8) (rpm-change-log-uses-utc . t))))
  '(save-place t nil (saveplace))
@@ -195,6 +195,12 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Emacs 24 package management
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; package.el is at http://repo.or.cz/w/emacs.git/blob_plain/1a0a666f941c99882093d7bd08ced15033bc3f0c:/lisp/emacs-lisp/package.el
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Compile .emacs, and recompile if .emacs is newer
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (when (and user-init-file
@@ -220,6 +226,21 @@
 ;; Library loading
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;
+;
+;
+;
+;(setenv "CVSROOT" "")
+;(setenv "CVS_DIR" "")
+;(setenv "CVS_PASSFILE" (concat (getenv "CVS_DIR") "/.cvspass"))
+;(setenv "CVS" (concat (getenv "CVS_DIR") ""))
+
+; (setenv "PATH" (concat "H:\\bin;H:\\Git\\cmd;H:\\Git\\bin;H:\\" (getenv "PATH")))
+; (setenv "PYTHONPATH" (concat (getenv "PYTHONPATH") ";H:\\mmm\\emacs-24.3\\etc"))
+; (setenv "PYTHONSTARTUP" "H:\\.pythonrc")
+; (let ((default-directory "~/.emacs.d/site-lisp/")) (normal-top-level-add-subdirs-to-load-path))
+
+
 (let ((default-directory (concat user-emacs-directory
                                  (convert-standard-filename "site-lisp/"))))
   (normal-top-level-add-to-load-path '("."))
@@ -229,6 +250,7 @@
 (setq with-library-load-libraries
       (or (getenv "EMACS_LOAD_LIBS")
           (getenv "EMACS_LOAD_LIBRARIES")))
+; (setenv "EMACS_LOAD_LIBS" "1")
 
 ;; from http://www.emacswiki.org/cgi-bin/emacs-en/LoadingLispFiles
 (defmacro with-library (symbol &rest body)
@@ -248,7 +270,9 @@
 ;; desktop mode lets us saves buffer state. activate it with M-x desktop-save RET.
 (with-library desktop (desktop-save-mode 1))
 
-(with-library graphviz-dot-mode ())
+(with-library graphviz-dot-mode
+  (add-to-list 'auto-mode-alist '("\\.dot$" . graphviz-dot-mode)))
+
 
 (with-library blank-mode ())
 
@@ -303,6 +327,10 @@
 
 (with-library anything ())
 (with-library anything-config ())
+(with-library anything-ipython
+  (with-library anything-show-completion
+    (use-anything-show-completion 'anything-ipython-complete
+				  '(length initial-pattern))))
 
 (with-library cosmetic ())
 
@@ -402,16 +430,13 @@
 (with-library R
   (add-to-list 'auto-mode-alist '("\\.R$" . R-mode)))
 
-(with-library smartparens ())
-
-;; (with-library svg-mode-line-themes
-;;   (smt/enable)
-;;   (smt/set-theme 'diesel)
-;;   (set-face-attribute 'mode-line nil :box nil)
-;;   (set-face-attribute 'mode-line-inactive nil :box nil))
+(with-library git-tools ())
 
 (with-library highlight-symbol
   (add-hook 'python-mode-hook highlight-symbol-mode))
+
+(with-library fci-mode
+  (add-hook 'python-mode-hook fci-mode))
 
 ;; probably should be the last library loaded
 (with-library ffap (ffap-bindings))
@@ -522,6 +547,23 @@
 (global-set-key "\M-s" 'mtd-invoke-isearch-with-symbol-near-point)
 (define-key isearch-mode-map "\M-s" 'isearch-repeat-forward)
 
+
+; from http://stackoverflow.com/questions/43765/pin-emacs-buffers-to-windows-for-cscope
+;; Toggle window dedication
+(defun toggle-window-dedicated ()
+  "Toggle whether the current active window is dedicated or not"
+  (interactive)
+  (message
+   (if (let (window (get-buffer-window (current-buffer)))
+         (set-window-dedicated-p window
+                                 (not (window-dedicated-p window))))
+       "Window '%s' is dedicated"
+     "Window '%s' is normal")
+   (current-buffer)))
+
+(global-set-key [pause] 'toggle-window-dedicated)
+
+
 (defun mtd-align-defun-to-top-of-viewable-screen ()
   ; doesn't do what I want right now
   (interactive)
@@ -604,6 +646,18 @@
                                 ; (java-mode . "eclipse")
                                 (other . "gnu"))))
 
+;;
+;; mail email smtp msmtpq sendmail
+;;
+;; from http://permalink.gmane.org/gmane.emacs.gnus.general/69846
+
+(setq message-send-mail-function 'message-send-mail-with-sendmail)
+(setq sendmail-program (expand-file-name "~/bin/msmtpQ")
+      mail-specify-envelope-from t
+;; needed for debians message.el cf. README.Debian.gz
+      message-sendmail-f-is-evil nil
+      mail-envelope-from 'header
+      message-sendmail-envelope-from 'header)
 
 
 ;;
@@ -687,6 +741,8 @@
 
 (global-set-key "\C-xb" 'iswitchb-buffer)
 
+(global-set-key "\M-%" 'query-replace-regexp)
+
 
 ;; from http://www.openweblog.com/users/hexmode/532156.html
 (global-set-key [(control ?+)] (lambda () (interactive)
@@ -732,3 +788,15 @@
 ;(load-library "~/.emacs.d/site-lisp/zenburn.el")
 ;(color-theme-zenburn)
 ;(setq eval-expression-debug-on-error t)
+
+
+;; from http://www.emacswiki.org/emacs/RevertBuffer
+(defun revert-buffer-keep-undo (&rest -)
+  "Revert buffer but keep undo history."
+  (interactive)
+  (let ((inhibit-read-only t))
+    (erase-buffer)
+    (insert-file-contents (buffer-file-name))
+    (set-visited-file-modtime (visited-file-modtime))
+    (set-buffer-modified-p nil)))
+(setq revert-buffer-function 'revert-buffer-keep-undo)
