@@ -1,0 +1,48 @@
+#remove some stupid / dangerous key bindings
+bind k
+bind ^k
+bind .
+bind ^\
+bind \\
+bind ^h
+bind h
+#make them better
+bind 'K' kill
+bind 'I' login on
+bind 'O' login off
+bind '{' history
+
+
+###
+# adapted from http://www.nabble.com/emacs-key-binding-to9671855.html
+bind ^@ stuff " " # ctrl-space -> space to start marking
+bind w stuff " " # alt-w -> space to stop marking and copy into buffer
+bind y paste . # ctrl-p y to paste buffer
+
+# from http://old.nabble.com/Re:-PgUp-and-PgDn-not-working-td9668896.html
+bindkey ^[v eval "copy" "stuff \"^u\""     # alt-v goes to copy mode
+#bindkey ^[f eval "copy"                    # alt-f goes to copy mode
+bindkey -m ^[v stuff "^u"
+bindkey -m ^[f stuff "^d"
+
+# ^[[A is up-arrow in gnome-terminal and edge console tty, so "mousescroll" is perhaps not very useful
+bindkey    ^[[A eval "copy" "stuff \"^u\""    # mousescroll up...
+bindkey    ^[[B eval "copy"                   # ...and down go to copy mode
+bindkey -m ^[[A stuff "^u"                    # and same for in copy mode
+bindkey -m ^[[B stuff "^d"
+
+bindkey ^[[5;3~ eval "copy" "stuff \"^u\"" # alt-page-up goes to copy mode
+bindkey ^[[6;3~ eval "copy"                # alt-page-down goes to copy mode
+bindkey -m ^[[5;3~ stuff "^u"              # alt-page-up sends page-up in copy mode
+bindkey -m ^[[6;3~ stuff "^d"              # alt-page-down sends page-down in copy mode
+
+# work putty -> ssh -> chop screen
+bindkey ^[^[[5~ eval "copy" "stuff \"^u\"" # alt-page-up
+bindkey -m ^[^[[2~ stuff "^u"
+bindkey -m ^[^[[6~ stuff "^d"             # alt-page-down
+
+#to reverse a binding, do the bindkey command without the command;
+# e.g.: bindkey -m ^[^[[2~
+# these unbind PgUp and PgDn in linux console / text mode screen on edge:
+# bindkey -m ^[^[[2~
+# bindkey -m ^[^[[6~

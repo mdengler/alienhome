@@ -1,0 +1,79 @@
+#
+#
+#
+text/html;google-chrome %s; test=sh -c 'test $DISPLAY'
+text/html;elinks %s; nametemplate=%s.html
+text/html;elinks -dump -dump-charset iso-8859-15 -default-mime-type text/html %s; needsterminal;copiousoutput;
+#
+application/pdf; evince %s; test=sh -c 'test $DISPLAY'
+application/pdf;/usr/bin/pdftotext -layout -nopgbrk %s -; copiousoutput
+#
+application/ms-word;oowriter %s; test=sh -c 'test $DISPLAY'
+application/ms-word;/home/martin/bin/word2text %s; copiousoutput
+application/msword;oowriter %s; test=sh -c 'test $DISPLAY'
+application/msword;/home/martin/bin/word2text %s; copiousoutput
+application/vnd.openxmlformats-officedocument.wordprocessingml.document; oowriter %s -|iconv -c -f utf8 -t latin2; test=sh -c 'test $DISPLAY';
+application/vnd.openxmlformats-officedocument.wordprocessingml.document; /home/martin/bin/docx2txt.pl %s -|iconv -c -f utf8 -t latin2; copiousoutput;
+application/vnd.openxmlformats-officedocument.wordprocessingml.documen; oowriter %s - |iconv -c -f utf8 -t latin2; test=sh -c 'test $DISPLAY';
+application/vnd.openxmlformats-officedocument.wordprocessingml.documen; /home/martin/bin/docx2txt.pl %s - |iconv -c -f utf8 -t latin2; copiousoutput;
+application/ms-powerpoint;ooimpress %s; test=sh -c 'test $DISPLAY'
+application/mspowerpoint;ooimpress %s; test=sh -c 'test $DISPLAY'
+#
+application/rtf;oowriter '%s'; test=sh -c 'test $DISPLAY'
+#
+#
+video/quicktime; totem '%s'; test=test -n "$DISPLAY"
+#
+#
+#
+#
+# from http://www.mutt.org/doc/manual/manual-5.html
+# and http://www.mail-archive.com/debian-bugs-dist@lists.debian.org/msg530453.html
+image/bmp; eog '%s'; test=test -n "$DISPLAY"
+image/x-bmp; eog '%s'; test=test -n "$DISPLAY"
+image/gif; eog '%s'; test=test -n "$DISPLAY"
+image/jpeg; eog '%s'; test=test -n "$DISPLAY"
+image/jpg; eog '%s'; test=test -n "$DISPLAY"
+image/pjpeg; eog '%s'; test=test -n "$DISPLAY"
+image/png; eog '%s'; test=test -n "$DISPLAY"
+image/x-png; eog '%s'; test=test -n "$DISPLAY"
+image/tiff; eog '%s'; test=test -n "$DISPLAY"
+image/x-gray; eog '%s'; test=test -n "$DISPLAY"
+image/x-icb; eog '%s'; test=test -n "$DISPLAY"
+image/x-ico; eog '%s'; test=test -n "$DISPLAY"
+image/x-portable-anymap; eog '%s'; test=test -n "$DISPLAY"
+image/x-portable-bitmap; eog '%s'; test=test -n "$DISPLAY"
+image/x-portable-graymap; eog '%s'; test=test -n "$DISPLAY"
+image/x-portable-pixmap; eog '%s'; test=test -n "$DISPLAY"
+image/x-xbitmap; eog '%s'; test=test -n "$DISPLAY"
+image/x-xpixmap; eog '%s'; test=test -n "$DISPLAY"
+image/x-pcx; eog '%s'; test=test -n "$DISPLAY"
+image/svg+xml; eog '%s'; test=test -n "$DISPLAY"
+image/svg+xml-compressed; eog '%s'; test=test -n "$DISPLAY"
+image/vnd.wap.wbmp; eog '%s'; test=test -n "$DISPLAY"
+#
+#
+# soffice stuff
+#
+application/vnd.sun.xml.writer;/home/martin/.openoffice/soffice %s
+application/vnd.sun.xml.writer.global;/home/martin/.openoffice/soffice %s
+application/vnd.stardivision.writer;/home/martin/.openoffice/soffice %s
+application/vnd.stardivision.writer-global;/home/martin/.openoffice/soffice %s
+application/x-starwriter;/home/martin/.openoffice/soffice %s
+application/vnd.sun.xml.writer.template;/home/martin/.openoffice/soffice %s
+application/vnd.sun.xml.calc;/home/martin/.openoffice/soffice %s
+application/vnd.stardivision.calc;/home/martin/.openoffice/soffice %s
+application/x-starcalc;/home/martin/.openoffice/soffice %s
+application/vnd.sun.xml.calc.template;/home/martin/.openoffice/soffice %s
+application/vnd.sun.xml.impress;/home/martin/.openoffice/soffice %s
+application/vnd.stardivision.impress;/home/martin/.openoffice/soffice %s
+application/vnd.stardivision.impress-packed;/home/martin/.openoffice/soffice %s
+application/x-starimpress;/home/martin/.openoffice/soffice %s
+application/vnd.sun.xml.impress.template;/home/martin/.openoffice/soffice %s
+application/vnd.sun.xml.draw;/home/martin/.openoffice/soffice %s
+application/vnd.stardivision.draw;/home/martin/.openoffice/soffice %s
+application/x-stardraw;/home/martin/.openoffice/soffice %s
+application/vnd.sun.xml.draw.template;/home/martin/.openoffice/soffice %s
+application/vnd.sun.xml.math;/home/martin/.openoffice/soffice %s
+application/vnd.stardivision.math;/home/martin/.openoffice/soffice %s
+application/x-starmath;/home/martin/.openoffice/soffice %s

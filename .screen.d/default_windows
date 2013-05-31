@@ -1,0 +1,6 @@
+screen -t mutt   0 mutt
+screen -t emacs  1 .screen.d/screen-1.sh
+screen -t $HOSTNAME   2 bash
+screen -t root   3 sudo su -
+screen -t bash -L 4 .screen.d/screen-4.sh
+select 2

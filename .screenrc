@@ -1,0 +1,86 @@
+################
+#
+# Martin Dengler's .screenrc
+# $Header$
+# 
+
+
+################
+#
+# C-t is the escape, C-t t for a literal C-t
+#
+
+escape ^tt
+
+################
+#
+# basic settings
+#
+
+# no annoying audible bell, please
+vbell on
+
+# detach on hangup
+autodetach on
+
+# don't display the copyright page
+startup_message off
+
+# emulate .logout message
+pow_detach_msg "Screen session of \$LOGNAME \$:cr:\$:nl:ended."
+
+# try to get gnome-terminal to handle mouse-scroll appropriately
+# from http://www.mail-archive.com/screen-users@gnu.org/msg02874.html
+## advertise hardstatus support to $TERMCAP
+##termcapinfo  * '' 'hs:ts=\E_:fs=\E\\:ds=\E_\E\\'
+termcapinfo xterm ti@:te@
+
+# make the shell in every window a login shell
+shell -$SHELL
+
+defscrollback 5000
+
+################
+#
+# terminal tweaks
+#
+
+source .screen.d/terminal_tweaks
+source .screen.d/screenrc-256color-terminal
+
+################
+#
+# keybindings
+#
+
+source .screen.d/bindings
+
+################
+#
+# status line
+#
+
+source .screen.d/hardstatus
+
+################
+#
+# default windows
+#
+
+source .screen.d/default_windows
+
+################
+#
+# auto-log
+#
+logfile $HOME/tmp/screen-logs/%Y%m%d-%n.log
+deflog on
+
+
+################
+#
+# local customizations
+#
+source .screen.d/customizations.${HOSTNAME}
+
+

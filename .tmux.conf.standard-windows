@@ -1,0 +1,7 @@
+neww -n bash      'exec bash'
+neww -n emacs     "env EMACS_LOAD_LIBS=1 TERM=xterm-256color emacs -nw"
+neww -n bash      'exec bash'
+neww -n bash      'exec bash'
+
+set -f status-utf8
+setw alternate-screen off
