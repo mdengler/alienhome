@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -e
+set -x
+echo 1-fetch                        && git fetch --all &&
+echo 2-checkout-upstream            && git checkout upstream/master &&
+echo 3-pull-master                  && git pull &&
+echo 4-checkout-origin-master       && git checkout master &&
+echo 5-rebase-origin-to-upstream    && git pull --rebase upstream master &&
+echo 6-push-upstream-to-origin      && git push &&
+echo 7-checkout-mtds-mods           && git checkout mtds-mods &&
+echo 8-rebase-mtds-to-origin        && git rebase master mtds-mods &&
+echo &&
+echo "Please check this is all good (origin mtds-mods should have divered from local), then run" &&
+echo "git push -f origin mtds-mods" &&
+echo "Consider running this to double-check:" &&
+echo "git remote show origin"
