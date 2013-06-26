@@ -40,7 +40,7 @@ def hash_onedir((exclude_extensions, include_extensions),
                 hashes=None):
     for fname in fnames:
         absfname = os.path.join(dirname, fname)
-        if not os.path.isdir(absfname):
+        if (not os.path.isdir(absfname)) and os.path.exists(absfname):
             if ((include_extensions is not None)
                 or
                 (exclude_extensions is not None)):
