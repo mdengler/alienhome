@@ -42,6 +42,8 @@ my_username = pwd.getpwuid(my_uid)[0]
 mail_parts = args[parts_split + 1:]
 mail_cmd = "echo | mail -s '%s' %s" % (" ".join(mail_parts), my_username)
 
+os.chdir("/")
+
 at_stdin, at_stdout, at_stderr = os.popen3(at_cmd)
 at_stdin.write(mail_cmd)
 at_stdin.write(os.linesep)
