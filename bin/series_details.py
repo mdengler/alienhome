@@ -22,7 +22,7 @@ def sample_standard_deviation(samples):
     deviations = []
     for xi in samples:
         deviations.append((xi - x_bar)**2)
-    variance = sum(deviations) / (len(samples) - 1)
+    variance = sum(deviations) / float(len(samples) - 1)
     return math.sqrt(variance), variance
 
 def first_float(line):
