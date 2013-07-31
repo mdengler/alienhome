@@ -22,6 +22,8 @@
  '(display-time-mode t)
  '(epa-file-cache-passphrase-for-symmetric-encryption t)
  '(epa-file-inhibit-auto-save nil)
+ '(fci-rule-color "gray14")
+ '(fill-column 79)
  '(font-lock-maximum-decoration t)
  '(font-lock-mode t t (font-lock))
  '(font-lock-use-colors t)
@@ -37,7 +39,7 @@
  '(gnus-novice-user nil)
  '(gnus-treat-display-xface (quote head))
  '(gnus-visual (quote (summary-highlight group-highlight article-highlight mouse-face summary-menu group-menu article-menu tree-highlight menu highlight browse-menu server-menu page-marker tree-menu binary-menu pick-menu grouplens-menu)))
- '(graphviz-dot-preview-extension "gif")
+ '(graphviz-dot-preview-extension "png")
  '(graphviz-dot-view-command "dotty %s")
  '(highlight-symbol-idle-delay 0)
  '(highlight-symbol-only-when-region-active-p t)
@@ -66,6 +68,8 @@
  '(ps-paper-type (quote a4))
  '(ps-printer-name nil)
  '(python-python-command "python-python-command.bat")
+ '(python-shell-interpreter "python-python-command.bat")
+ '(rcirc-server-alist (quote (("irc.freenode.net" :channels ("#rcirc" "#bash" "#clojure" "#python") :encryption tls))))
  '(remember-mailbox "~/Maildir/todo")
  '(remote-shell-program "ssh")
  '(safe-local-variable-values (quote ((coding-system . utf-8) (rpm-change-log-uses-utc . t))))
@@ -91,6 +95,7 @@
  '(transient-mark-mode t)
  '(truncate-lines nil)
  '(user-mail-address "martin@martindengler.com")
+ ;'(url-proxy-services (quote (("no_proxy" . "^.*.example.com") ("no_proxy" . "^.*.example.net") ("http" . "proxyhost.example.net:8080") ("https" . "proxyhost.example.net:8443"))))
  '(w3m-use-cookies t)
  '(winner-mode t nil (winner)))
 
@@ -437,6 +442,20 @@
 
 (with-library fci-mode
   (add-hook 'python-mode-hook fci-mode))
+
+(with-library w32-registry
+  (eval-after-load "url"
+  '(progn
+     (require 'w32-registry)
+     (defadvice url-retrieve (before
+                              w32-set-proxy-dynamically
+                              activate)
+       "Before retrieving a URL, query the IE Proxy settings, and use them."
+       (let ((proxy (w32reg-get-ie-proxy-config)))
+         (setq url-using-proxy proxy
+               url-proxy-services proxy)))))
+  ; (ad-deactivate #'url-retrieve)
+  )
 
 ;; probably should be the last library loaded
 (with-library ffap (ffap-bindings))
