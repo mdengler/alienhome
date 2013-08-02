@@ -1,0 +1,28 @@
+[user]
+	name = Martin Dengler
+	email = martin@martindengler.com
+[giggle]
+	compact-mode = false
+	main-window-maximized = true
+	main-window-geometry = 0x0+0+0
+[rerere]
+	enabled = 1
+[sendemail]
+    bcc = martin@martindengler.com
+[color]
+    ui = auto
+[bz]
+	browser = google-chrome
+[diff "lisp"]
+    xfuncname="^(\\((def|test).*)$"
+[diff "clj"]
+    xfuncname="^(\\((def|test).*)$"
+[push]
+	default = matching
+[alias]
+    log2 = log --oneline --graph --date-order --decorate --pretty=format:'%Creset %Cgreen%h %Creset %s %Cblueby %an (%ar) %C(yellow) %d %Cred %ad'
+    log3 = log --oneline --graph --date-order --decorate --pretty=format:'%Creset %Cgreen%h %Creset %s %Cblueby %an (%ar) %C(yellow) %d %Cred %ad' --branches
+	ctags = !.git/hooks/ctags
+
+[init]
+	templatedir = ~/.git_template

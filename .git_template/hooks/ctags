@@ -1,0 +1,12 @@
+#!/bin/sh
+set -e
+PATH="/usr/local/bin:$PATH"
+trap "rm -f .git/tags.$$" EXIT
+
+perl -npe 's,^/,,' < .gitignore > .git/ctags-.gitignore
+#ctags --tag-relative -Rf.git/tags.$$ --exclude=.git --exclude=@.git/info/exclude --exclude=@.gitignore --languages=-javascript,sql
+ctags --tag-relative -Rf.git/tags.$$ --links=no --exclude=.git --exclude=@.git/info/exclude --exclude=@.git/ctags-.gitignore "--languages=C,C++,C#,Java,JavaScript,Lisp,Lua,Make,MatLab,OCaml,Python,Ruby,Scheme,Sh,SQL,Tex"
+mv .git/tags.$$ .git/tags
+#ctags --tag-relative -Rf.git/tags.$$ --exclude=.git --exclude=@.git/info/exclude --exclude=@.git/ctags-.gitignore --languages=-javascript,sql -e
+ctags --tag-relative -Rf.git/tags.$$ --links=no --exclude=.git --exclude=@.git/info/exclude --exclude=@.git/ctags-.gitignore "--languages=C,C++,C#,Java,JavaScript,Lisp,Lua,Make,MatLab,OCaml,Python,Ruby,Scheme,Sh,SQL,Tex" -e
+mv .git/tags.$$ .git/etags
