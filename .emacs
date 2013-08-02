@@ -629,6 +629,15 @@
 (global-set-key "\M-j" 'mtd-save-current-buffer-as-journal-entry-file)
 
 
+;; org-mode
+(global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-cc" 'org-capture)
+(global-set-key "\C-ca" 'org-agenda)
+(global-set-key "\C-cb" 'org-iswitchb)
+
+
+
+
 ;;
 ;; from http://stackoverflow.com/questions/805050/eclipse-indentation-on-emacs
 ;;
