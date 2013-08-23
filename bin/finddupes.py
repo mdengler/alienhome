@@ -104,6 +104,31 @@ def report_dupes(dupes, outfh=None, only_filenames=False, exclude_earliest=False
                 outfh.write("%s,%s\n" % (dupehash, fname))
 
 
+def finddupes_in_dirs(dirnames,
+                      only_shallowest_dupes=False,
+                      exclude_extensions=(),
+                      include_extensions=(),
+                      hashes=None):
+    if hashes is None:
+        hashes = {}
+
+    def hash_onedir_wrapped(*args, **kwargs):
+        hash_onedir(*args, hashes=hashes, **kwargs)
+
+    for dirname in dirnames:
+        os.path.walk(dirname,
+                     hash_onedir_wrapped,
+                     (exclude_extensions,
+                      include_extensions))
+
+    dupes = finddupes(hashes,
+                      only_shallowest_dupes=only_shallowest_dupes,
+                      exclude_extensions=exclude_extensions,
+                      include_extensions=include_extensions)
+
+    return dupes, hashes
+
+
 
 if __name__ == "__main__":
     parser = OptionParser()
