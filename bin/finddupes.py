@@ -23,10 +23,7 @@ from optparse import OptionParser
 
 
 
-_hashes = {}
-def hash_onefile(absfname, hashes=None):
-    if hashes is None:
-        hashes = _hashes
+def hash_onefile(absfname, hashes):
     filehash = sha.sha(open(absfname).read()).hexdigest()
     if filehash not in hashes:
         hashes[filehash] = []
@@ -54,7 +51,22 @@ def hash_onedir((exclude_extensions, include_extensions),
             hash_onefile(absfname, hashes=hashes)
 
 
-def finddupes(hashes, only_shallowest_dupes=False, exclude_extensions=None, include_extensions=None):
+def hash_dirs(dirnames, exclude_extensions=(), include_extensions=(), hashes=None):
+    if hashes is None:
+        hashes = {}
+
+    def hash_onedir_wrapped(*args, **kwargs):
+        hash_onedir(*args, hashes=hashes, **kwargs)
+
+    for dirname in dirnames:
+        os.path.walk(dirname,
+                     hash_onedir_wrapped,
+                     (exclude_extensions, include_extensions))
+
+    return hashes
+
+
+def finddupes(hashes, only_shallowest_dupes=False):
     dupes = dict((h, v) for h, v in hashes.iteritems() if len(v) > 1)
 
     if only_shallowest_dupes:
@@ -108,25 +120,92 @@ def finddupes_in_dirs(dirnames,
                       exclude_extensions=(),
                       include_extensions=(),
                       hashes=None):
-    if hashes is None:
-        hashes = {}
+    """utility function for interactive / library use"""
 
-    def hash_onedir_wrapped(*args, **kwargs):
-        hash_onedir(*args, hashes=hashes, **kwargs)
-
-    for dirname in dirnames:
-        os.path.walk(dirname,
-                     hash_onedir_wrapped,
-                     (exclude_extensions,
-                      include_extensions))
+    hashes = hash_dirs(dirnames,
+                       exclude_extensions,
+                       include_extensions,
+                       hashes=hashes)
 
     dupes = finddupes(hashes,
-                      only_shallowest_dupes=only_shallowest_dupes,
-                      exclude_extensions=exclude_extensions,
-                      include_extensions=include_extensions)
+                      only_shallowest_dupes=only_shallowest_dupes)
 
     return dupes, hashes
 
+
+def finduniques(hashes):
+    return dict((h, v) for h, v in hashes.iteritems() if len(v) < 2)
+
+
+def report_uniques(uniques, outfh=None, only_filenames=False, sort_by_hash=False):
+    """writes lines of uniques to outfh
+
+    sort order is by filename by default (use sort_by_hash=True to sort by hash)
+
+    """
+    outfh = outfh or sys.stdout
+    if sort_by_hash:
+        items_sorted = sorted(uniques.iteritems())
+    else:
+        items_sorted = sorted(uniques.iteritems(), cmp=lambda p1, p2: cmp(p1[1], p2[1]))
+    if only_filenames:
+        lines = (fname for hash_, fname in items_sorted)
+    else:
+        lines = ("{},{}".format(hash, fname) for hash, (fname, ) in items_sorted)
+    outfh.write("\n".join(lines))
+
+
+def finduniques_in_dirs(dirnames,
+                        exclude_extensions=(),
+                        include_extensions=(),
+                        hashes=None):
+    """utility function for interactive / library use"""
+
+    hashes = hash_dirs(dirnames,
+                       exclude_extensions,
+                       include_extensions,
+                       hashes=hashes)
+
+    uniques = finduniques(hashes)
+
+    return uniques, hashes
+
+
+def main_get_hashes(options, args):
+
+    hashes = {}
+
+    dirnames = []
+    filenames = []
+
+    if options.shasum_input:
+        for line in sys.stdin.readlines():
+            line = line.strip()
+            filehash = line.split()[0]
+            fname = line[len(filehash):].strip()  # XXX: whitespace issue?
+            if filehash not in hashes:
+                hashes[filehash] = []
+            hashes[filehash].append(fname)
+
+    elif len(args) == 0:
+        for fname in sys.stdin.readlines():
+            fname = fname.strip()
+            if os.path.isdir(fname):
+                dirnames.append(fname)
+            else:
+                filenames.append(fname)
+    else:
+        dirnames.extend(args)
+
+    for filename in filenames:
+        hash_onefile(filename, hashes=hashes)
+
+    hash_dirs(dirnames,
+              exclude_extensions=options.exclude_extensions,
+              include_extensions=options.include_extensions,
+              hashes=hashes)
+
+    return hashes
 
 
 if __name__ == "__main__":
@@ -154,40 +233,23 @@ if __name__ == "__main__":
     parser.add_option("-F", "--only-filenames", action="store_true",
                       help="only report filenames, not hashes"
                       " (useful with --do-not-report-earliest-of-dupes)")
+    parser.add_option("-u", "-U", "--unique", action="store_true",
+                      help="invert function: only report unique hashes & files")
     parser.set_usage(__doc__)
     options, args = parser.parse_args()
 
-    if options.shasum_input:
-        for line in sys.stdin.readlines():
-            line = line.strip()
-            filehash = line.split()[0]
-            fname = line[len(filehash):].strip()  # XXX: whitespace issue?
-            if filehash not in _hashes:
-                _hashes[filehash] = []
-            _hashes[filehash].append(fname)
+    hashes = main_get_hashes(options, args)
 
-    elif len(args) == 0:
-        for fname in sys.stdin.readlines():
-            fname = fname.strip()
-            if os.path.isdir(fname):
-                os.path.walk(fname,
-                             hash_onedir,
-                             (options.exclude_extensions,
-                              options.include_extensions))
-            else:
-                hash_onefile(fname)
+    if options.unique:
+        uniques = finduniques(hashes)
+
+        report_uniques(uniques, only_filenames=options.only_filenames)
+
     else:
-        for dirname in args:
-            os.path.walk(dirname,
-                         hash_onedir,
-                         (options.exclude_extensions,
-                          options.include_extensions))
 
-    dupes = finddupes(_hashes,
-                      only_shallowest_dupes=options.only_shallowest_dupes,
-                      exclude_extensions=options.exclude_extensions,
-                      include_extensions=options.include_extensions)
+        dupes = finddupes(hashes,
+                          only_shallowest_dupes=options.only_shallowest_dupes)
 
-    report_dupes(dupes,
-                 only_filenames=options.only_filenames,
-                 exclude_earliest=options.exclude_earliest_dupe)
+        report_dupes(dupes,
+                     only_filenames=options.only_filenames,
+                     exclude_earliest=options.exclude_earliest_dupe)
