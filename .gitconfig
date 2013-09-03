@@ -1,3 +1,5 @@
+[core]
+    autocrlf = false
 [user]
 	name = Martin Dengler
 	email = martin@martindengler.com
@@ -20,8 +22,8 @@
 [push]
 	default = matching
 [alias]
-    log2 = log --oneline --graph --date-order --decorate --pretty=format:'%Creset %Cgreen%h %Creset %s %Cblueby %an (%ar) %C(yellow) %d %Cred %ad'
-    log3 = log --oneline --graph --date-order --decorate --pretty=format:'%Creset %Cgreen%h %Creset %s %Cblueby %an (%ar) %C(yellow) %d %Cred %ad' --branches
+    log2 = log --oneline --graph --date-order --decorate --pretty=format:"%Creset %Cgreen%h %Creset%C(bold white) %s %C(bold black)by%C(reset) %C(cyan)%an%Creset (%ar) %C(yellow) %d %Cred %ad"
+    log3 = log --oneline --graph --date-order --decorate --pretty=format:"%Creset %Cgreen%h %Creset%C(bold white) %s %C(bold black)by%C(reset) %C(cyan)%an%Creset (%ar) %C(yellow) %d %Cred %ad" --branches
 	ctags = !.git/hooks/ctags
 
 [init]
