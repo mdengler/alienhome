@@ -35,7 +35,8 @@ alias psc='ps xawf -eo pid,user,cgroup,args'
 #   http://volnitsky.com/project/git-prompt
 alias ga='git add'
 alias gd='git diff --stat'
-alias gl='git log --oneline --graph --date-order --decorate --pretty=format:"%Creset %Cgreen%h %Creset %s %Cblueby %an (%ar) %C(yellow) %d %Cred %ad" --branches'
+alias gl='git log --oneline --graph --date-order --decorate --pretty=format:"%Creset %Cgreen%h %Creset%C(bold white) %s %C(bold black)by%C(reset) %C(cyan)%an%Creset (%ar) %C(yellow) %d %Cred %ad" --branches'
+alias glh='gl | head -28'
 alias gm='git commit -m'
 alias gs='git status'
 
