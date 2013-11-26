@@ -24,3 +24,107 @@ else:
         del rlcompleter
     del readline
 
+
+import re
+import sys
+
+exc_locals = None
+
+def frames_from_traceback(exc_traceback):
+    frames = []
+    tb = exc_traceback
+    while tb:
+        frames.append(tb.tb_frame)
+        tb = tb.tb_next
+    return frames
+
+
+def interesting(frame):
+    return (("<genexpr>" not in frame.f_code.co_name)
+            and (("src" in frame.f_code.co_filename)
+                 or
+                 ("darwin" in frame.f_code.co_filename)))
+
+
+def locals_and_value_strings(frame, value_str_cutoff=65):
+    for key in sorted(frame.f_locals.keys()):
+        value = frame.f_locals[key]
+        try:
+            value_str = repr(value)
+        except Exception as value_exc:
+            value_str = str(value_exc)
+        if len(value_str) > value_str_cutoff:
+            value_str = value_str[:value_str_cutoff] + "..."
+        #sys.stderr.write("\t%20s = %s\n" % (key, value_str))
+
+        # preserve last locals (risk of memory leaks and funky stuff)
+        global exc_locals
+        exc_locals = frame.f_locals
+
+        yield key, value_str
+
+
+def frames_and_locals_strings(frames):
+    for frame in frames:
+        if not (frame == frames[-1] or interesting(frame)):
+            locals_strings = []
+        else:
+            locals_strings = list(locals_and_value_strings(frame))
+        yield frame, locals_strings
+
+
+def merge_traceback_lines_and_locals_strings(exception_lines, locals_lines):
+    exception_lines = tuple(exception_lines)
+
+    first_line = exception_lines[0]  # "Traceback (most recent call last)"
+    exception_lines_iter = iter(exception_lines[1:-1])
+    last_line = exception_lines[-1]  # str(exception)
+
+    locals_lines_iter = iter(locals_lines)
+
+    next_exception_line = next(exception_lines_iter)
+    next_locals_lines = next(locals_lines_iter)
+
+    yield first_line
+
+    next_frame_regexp = r'\s+File "[^"]+",\s+line\s+\d+,\s+in'
+
+    while next_exception_line is not None:
+        yield next_exception_line
+        try:
+            next_exception_line = next(exception_lines_iter)
+        except StopIteration:
+            next_exception_line = None
+
+        if next_exception_line is None or re.search(next_frame_regexp, next_exception_line):
+            for var, value in next_locals_lines:
+                yield "\t|-  {:>10s} = {}\n".format(var, value)
+            try:
+                next_locals_lines = next(locals_lines_iter)
+            except StopIteration:
+                next_locals_lines = []
+
+    yield last_line
+
+
+def better_excepthook(exc_type, exc_value, exc_traceback):
+    import traceback
+    exception_lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
+    frames = list(frames_from_traceback(exc_traceback))
+    locals_lines = list((lines for frame, lines in frames_and_locals_strings(frames)))
+
+    for line in merge_traceback_lines_and_locals_strings(exception_lines, locals_lines):
+        sys.stderr.write(line)
+
+    sys.stderr.write("ex: {}; frames: {}; locals {}\n".format(len(exception_lines), len(frames), len(locals_lines)))
+
+    # print >> sys.stderr
+    # print >> sys.stderr
+    # traceback.print_exception(exc_type, exc_value, exc_traceback)
+    # print >> sys.stderr
+    # print >> sys.stderr
+
+
+
+
+sys.excepthook = better_excepthook
