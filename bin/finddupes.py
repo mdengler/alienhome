@@ -232,7 +232,7 @@ if __name__ == "__main__":
                       " --only-filenames")
     parser.add_option("-F", "--only-filenames", action="store_true",
                       help="only report filenames, not hashes"
-                      " (useful with --do-not-report-earliest-of-dupes)")
+                      " (useful with --exclude-earliest-dupe)")
     parser.add_option("-u", "-U", "--unique", action="store_true",
                       help="invert function: only report unique hashes & files")
     parser.set_usage(__doc__)
