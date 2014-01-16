@@ -10,6 +10,10 @@ finddupes.py . /some/other/dir
 finddupes.py --exclude-extensions=txt,csv --only-shallowest-dupes .
 find . -type f -print0 | xargs -0 sha1sum | finddupes.py --shasum-input
 
+finddupes.py --include-extensions=jpg \
+  --exclude-shallowest-dupes --only-filenames --null . \
+  | xargs -0 rm
+
 prints out the SHA hash and filenames of all files below the
 directories specified on the command line if two or more files have
 the same SHA hash
@@ -94,7 +98,8 @@ def report_dupes(dupes,
                  outfh=None,
                  only_filenames=False,
                  exclude_earliest=False,
-                 exclude_shallowest=False):
+                 exclude_shallowest=False,
+                 null_delimiters=False):
 
     if exclude_earliest and exclude_shallowest:
         msg = "both exclude_earliest and exclude_shallowest cannot be True"
@@ -126,11 +131,13 @@ def report_dupes(dupes,
         else:
             sorted_fnames = sorted(fnames, _by_lastmod_time_by_name_rev)
 
+        delimiter = "\n" if not null_delimiters else chr(0)
+
         for fname in sorted_fnames:
             if only_filenames:
-                outfh.write("%s\n" % fname)
+                outfh.write("%s%s" % (fname, delimiter))
             else:
-                outfh.write("%s,%s\n" % (dupehash, fname))
+                outfh.write("%s,%s%s" % (dupehash, fname, delimiter))
 
 
 def finddupes_in_dirs(dirnames,
@@ -155,7 +162,11 @@ def finduniques(hashes):
     return dict((h, v) for h, v in hashes.iteritems() if len(v) < 2)
 
 
-def report_uniques(uniques, outfh=None, only_filenames=False, sort_by_hash=False):
+def report_uniques(uniques,
+                   outfh=None,
+                   only_filenames=False,
+                   sort_by_hash=False,
+                   null_delimiters=False):
     """writes lines of uniques to outfh
 
     sort order is by filename by default (use sort_by_hash=True to sort by hash)
@@ -170,7 +181,8 @@ def report_uniques(uniques, outfh=None, only_filenames=False, sort_by_hash=False
         lines = (fname for hash_, fname in items_sorted)
     else:
         lines = ("{},{}".format(hash, fname) for hash, (fname, ) in items_sorted)
-    outfh.write("\n".join(lines))
+    delimiter = "\n" if not null_delimiters else chr(0)
+    outfh.write(delimiter.join(lines))
 
 
 def finduniques_in_dirs(dirnames,
@@ -260,6 +272,9 @@ if __name__ == "__main__":
                       " (useful with --exclude-earliest-dupe)")
     parser.add_option("-u", "-U", "--unique", action="store_true",
                       help="invert function: only report unique hashes & files")
+    parser.add_option("-0", "--null", action="store_true",
+                      help="output is null-delimited.  Useful with"
+                      " --only-filesnames")
     parser.set_usage(__doc__)
     options, args = parser.parse_args()
 
@@ -268,7 +283,9 @@ if __name__ == "__main__":
     if options.unique:
         uniques = finduniques(hashes)
 
-        report_uniques(uniques, only_filenames=options.only_filenames)
+        report_uniques(uniques,
+                       only_filenames=options.only_filenames,
+                       null_delimiters=options.null)
 
     else:
 
@@ -278,4 +295,5 @@ if __name__ == "__main__":
         report_dupes(dupes,
                      only_filenames=options.only_filenames,
                      exclude_earliest=options.exclude_earliest_dupe,
-                     exclude_shallowest=options.exclude_shallowest_dupe)
+                     exclude_shallowest=options.exclude_shallowest_dupe,
+                     null_delimiters=options.null)
