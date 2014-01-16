@@ -99,11 +99,20 @@ def report_dupes(dupes,
                  only_filenames=False,
                  exclude_earliest=False,
                  exclude_shallowest=False,
-                 null_delimiters=False):
+                 null_delimiters=False,
+                 show_dedupe=False):
 
     if exclude_earliest and exclude_shallowest:
         msg = "both exclude_earliest and exclude_shallowest cannot be True"
         raise ValueError(msg)
+
+    if show_dedupe and (not any((exclude_earliest, exclude_shallowest))):
+        msg = "one of exclude_earliest or exclude_shallowest must be True " \
+              " when show_dedupe is True"
+        raise ValueError(msg)
+
+    if show_dedupe and only_filenames:
+        raise ValueError("both show_dedupe and only_filenames cannot be True")
 
     if outfh is None:
         outfh = sys.stdout
@@ -120,13 +129,15 @@ def report_dupes(dupes,
 
     for dupehash, fnames in dupes.iteritems():
 
+        original = None
+
         if exclude_shallowest:
             sorted_fnames = sorted(fnames)
-            sorted_fnames.pop(0)
+            original = sorted_fnames.pop(0)
 
         elif exclude_earliest:
             sorted_fnames = sorted(fnames, _by_lastmod_time_by_name_rev)
-            sorted_fnames.pop(0)
+            original = sorted_fnames.pop(0)
 
         else:
             sorted_fnames = sorted(fnames, _by_lastmod_time_by_name_rev)
@@ -134,7 +145,9 @@ def report_dupes(dupes,
         delimiter = "\n" if not null_delimiters else chr(0)
 
         for fname in sorted_fnames:
-            if only_filenames:
+            if show_dedupe:
+                outfh.write("rm '%s' && ln '%s' '%s'%s" % (fname, original, fname, delimiter))
+            elif only_filenames:
                 outfh.write("%s%s" % (fname, delimiter))
             else:
                 outfh.write("%s,%s%s" % (dupehash, fname, delimiter))
@@ -275,6 +288,9 @@ if __name__ == "__main__":
     parser.add_option("-0", "--null", action="store_true",
                       help="output is null-delimited.  Useful with"
                       " --only-filesnames")
+    parser.add_option("-D", "--show-dedupe", action="store_true",
+                      help="show commands to dedupe (using hard links) files"
+                      " instead of the normal output")
     parser.set_usage(__doc__)
     options, args = parser.parse_args()
 
@@ -296,4 +312,5 @@ if __name__ == "__main__":
                      only_filenames=options.only_filenames,
                      exclude_earliest=options.exclude_earliest_dupe,
                      exclude_shallowest=options.exclude_shallowest_dupe,
-                     null_delimiters=options.null)
+                     null_delimiters=options.null,
+                     show_dedupe=options.show_dedupe)
