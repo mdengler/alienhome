@@ -90,9 +90,15 @@ def finddupes(hashes, only_shallowest_dupes=False):
     return dupes
 
 
-def report_dupes(dupes, outfh=None, only_filenames=False, exclude_earliest=False, exclude_shallowest=False):
+def report_dupes(dupes,
+                 outfh=None,
+                 only_filenames=False,
+                 exclude_earliest=False,
+                 exclude_shallowest=False):
+
     if exclude_earliest and exclude_shallowest:
-        raise ValueError("both exclude_earliest and exclude_shallowest cannot be True")
+        msg = "both exclude_earliest and exclude_shallowest cannot be True"
+        raise ValueError(msg)
 
     if outfh is None:
         outfh = sys.stdout
