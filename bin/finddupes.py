@@ -90,7 +90,10 @@ def finddupes(hashes, only_shallowest_dupes=False):
     return dupes
 
 
-def report_dupes(dupes, outfh=None, only_filenames=False, exclude_earliest=False):
+def report_dupes(dupes, outfh=None, only_filenames=False, exclude_earliest=False, exclude_shallowest=False):
+    if exclude_earliest and exclude_shallowest:
+        raise ValueError("both exclude_earliest and exclude_shallowest cannot be True")
+
     if outfh is None:
         outfh = sys.stdout
 
@@ -105,9 +108,18 @@ def report_dupes(dupes, outfh=None, only_filenames=False, exclude_earliest=False
         return -1 * cmp(fname_a, fname_b)
 
     for dupehash, fnames in dupes.iteritems():
-        sorted_fnames = sorted(fnames, _by_lastmod_time_by_name_rev)
-        if exclude_earliest:
+
+        if exclude_shallowest:
+            sorted_fnames = sorted(fnames)
             sorted_fnames.pop(0)
+
+        elif exclude_earliest:
+            sorted_fnames = sorted(fnames, _by_lastmod_time_by_name_rev)
+            sorted_fnames.pop(0)
+
+        else:
+            sorted_fnames = sorted(fnames, _by_lastmod_time_by_name_rev)
+
         for fname in sorted_fnames:
             if only_filenames:
                 outfh.write("%s\n" % fname)
@@ -229,7 +241,14 @@ if __name__ == "__main__":
                       action="store_true",
                       help="when reporting dupes, skip earliest"
                       " (it will not be printed).  Useful with"
-                      " --only-filenames")
+                      " --only-filenames (e.g., to find list of later dupes"
+                      " to delete)")
+    parser.add_option("-X", "--exclude-shallowest-dupe",
+                      action="store_true",
+                      help="when reporting dupes, skip shallowest"
+                      " (it will not be printed).  Useful with"
+                      " --only-filenames (e.g., to find list of deeper dupes"
+                      " to delete)")
     parser.add_option("-F", "--only-filenames", action="store_true",
                       help="only report filenames, not hashes"
                       " (useful with --exclude-earliest-dupe)")
@@ -252,4 +271,5 @@ if __name__ == "__main__":
 
         report_dupes(dupes,
                      only_filenames=options.only_filenames,
-                     exclude_earliest=options.exclude_earliest_dupe)
+                     exclude_earliest=options.exclude_earliest_dupe,
+                     exclude_shallowest=options.exclude_shallowest_dupe)
