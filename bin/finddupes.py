@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-"""
-
-%prog - find duplicate files in one or more directory trees
+"""%prog - find duplicate files in one or more directory trees
 
 Examples:
 
@@ -17,6 +15,20 @@ finddupes.py --include-extensions=jpg \
 prints out the SHA hash and filenames of all files below the
 directories specified on the command line if two or more files have
 the same SHA hash
+
+Alternately, passing --show-dedupe will cause primitive de-dupe commands to be
+printed (not run).
+
+
+Alternates: Similar in purpose to rdfind ( http://rdfind.pauldreik.se/ ) and
+duff ( http://duff.dreda.org/ ), but written before I found them.
+
+TODO:
+
+- ignore zero-length files
+- optimize away the need to hash files if --only-filenames is passed
+- ignore small files
+
 """
 
 import os
