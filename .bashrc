@@ -78,6 +78,8 @@ export EDITOR=~/bin/editor
 
 export PYTHONSTARTUP=~/.pythonrc
 
+export PS1='\[\033[1;34m\](\A) \W \$ \[\033[m\]'
+
 
 # Auto-tmux invocation. From screen instructions at
 # http://taint.org/wk/RemoteLoginAutoScreen
