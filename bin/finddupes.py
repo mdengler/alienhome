@@ -21,7 +21,8 @@ printed (not run).
 
 
 Alternates: Similar in purpose to rdfind ( http://rdfind.pauldreik.se/ ) and
-duff ( http://duff.dreda.org/ ), but written before I found them.
+duff ( http://duff.dreda.org/ ), but written before I found them and more
+scriptable.
 
 TODO:
 
