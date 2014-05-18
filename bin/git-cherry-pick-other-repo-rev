@@ -3,4 +3,7 @@
 set -e
 other_repo="$1" ; shift
 other_rev="$1" ; shift
+if [ -e "$other_repo"/.git ] ; then
+    other_repo="$other_repo"/.git
+fi
 git --git-dir="$other_repo" format-patch -k -1 --stdout "$other_rev" | git am -3 -k
