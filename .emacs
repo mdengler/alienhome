@@ -386,6 +386,9 @@
 
 (with-library smooth-scrolling ())
 
+(with-library tracker-dired
+  (global-set-key "\C-x\C-t" 'tracker-dired))
+
 (with-library tramp ())
 
 
