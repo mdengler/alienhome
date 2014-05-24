@@ -116,12 +116,14 @@ def report_dupes(dupes,
                  show_dedupe=False):
 
     if exclude_earliest and exclude_shallowest:
-        msg = "both exclude_earliest and exclude_shallowest cannot be True"
+        msg = "both exclude_earliest (--exclude-earliest) and" \
+              " exclude_shallowest (--exclude_shallowest) cannot be True"
         raise ValueError(msg)
 
     if show_dedupe and (not any((exclude_earliest, exclude_shallowest))):
-        msg = "one of exclude_earliest or exclude_shallowest must be True " \
-              " when show_dedupe is True"
+        msg = "one of exclude_earliest (--exclude-earliest) or" \
+              " exclude_shallowest (--exclude-shallowest) must be True " \
+              " when show_dedupe (--show-dedupe) is True"
         raise ValueError(msg)
 
     if show_dedupe and only_filenames:
