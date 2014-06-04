@@ -12,9 +12,9 @@ finddupes.py --include-extensions=jpg \
   --exclude-shallowest-dupes --only-filenames --null . \
   | xargs -0 rm
 
-prints out the SHA hash and filenames of all files below the
-directories specified on the command line if two or more files have
-the same SHA hash
+prints out the SHA 256 hash (hexdigest) and filenames of all files below the
+directories specified on the command line if two or more files' contents have
+the same SHA 256 hash (hexdigest).
 
 Alternately, passing --show-dedupe will cause primitive de-dupe commands to be
 printed (not run).
@@ -33,7 +33,7 @@ TODO:
 """
 
 import os
-import sha
+import hashlib
 import sys
 
 from optparse import OptionParser
@@ -41,7 +41,7 @@ from optparse import OptionParser
 
 
 def hash_onefile(absfname, hashes):
-    filehash = sha.sha(open(absfname).read()).hexdigest()
+    filehash = hashlib.sha256(open(absfname).read()).hexdigest()
     if filehash not in hashes:
         hashes[filehash] = []
     hashes[filehash].append(absfname)
