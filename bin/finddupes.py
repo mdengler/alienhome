@@ -44,8 +44,8 @@ def hash_onefile(absfname, hashes):
     try:
         filehash = hashlib.sha256(open(absfname).read()).hexdigest()
     except OverflowError as toobig:
-        sys.stderr.write("Could not calculate hash for filename {!r}:"
-                         "{}".format(absfname, toobig))
+        sys.stderr.write("Could not calculate hash for filename '{0}':"
+                         "{1}".format(absfname, toobig))
         return
     if filehash not in hashes:
         hashes[filehash] = []
@@ -213,7 +213,7 @@ def report_uniques(uniques,
     if only_filenames:
         lines = (fname for hash_, fname in items_sorted)
     else:
-        lines = ("{},{}".format(hash, fname) for hash, (fname, ) in items_sorted)
+        lines = ("{0},{1}".format(hash, fname) for hash, (fname, ) in items_sorted)
     delimiter = "\n" if not null_delimiters else chr(0)
     outfh.write(delimiter.join(lines))
 
