@@ -45,7 +45,7 @@ def hash_onefile(absfname, hashes):
         filehash = hashlib.sha256(open(absfname).read()).hexdigest()
     except OverflowError as toobig:
         sys.stderr.write("Could not calculate hash for filename {!r}:"
-                         "{}".format(asbfname, toobig))
+                         "{}".format(absfname, toobig))
         return
     if filehash not in hashes:
         hashes[filehash] = []
