@@ -47,6 +47,10 @@ def hash_onefile(absfname, hashes):
         sys.stderr.write("Could not calculate hash for filename '{0}':"
                          "{1}".format(absfname, toobig))
         return
+    except IOError as strange:
+        sys.stderr.write("Could not calculate hash for filename '{0}':"
+                         "{1}".format(absfname, strange))
+        return
     if filehash not in hashes:
         hashes[filehash] = []
     hashes[filehash].append(absfname)
