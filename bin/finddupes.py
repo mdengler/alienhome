@@ -45,11 +45,11 @@ def hash_onefile(absfname, hashes):
         filehash = hashlib.sha256(open(absfname).read()).hexdigest()
     except OverflowError as toobig:
         sys.stderr.write("Could not calculate hash for filename '{0}':"
-                         "{1}".format(absfname, toobig))
+                         "{1}\n".format(absfname, toobig))
         return
     except IOError as strange:
         sys.stderr.write("Could not calculate hash for filename '{0}':"
-                         "{1}".format(absfname, strange))
+                         "{1}\n".format(absfname, strange))
         return
     if filehash not in hashes:
         hashes[filehash] = []
