@@ -281,6 +281,7 @@ run_queue_sendmail() {                        # run queue
 ## run (flush) queue
 run_queue() {    # <- 'sm' mode      # run queue
   local SENDMAIL_MODE="$1"
+  local EMAIL_QUEUE_QUIET="${EMAIL_QUEUE_QUIET}${SENDMAIL_MODE}"
   local M LST="$('ls' $Q/*.mail 2>/dev/null)"            # list of mails in queue
   local -i NDX=0
 
@@ -290,8 +291,7 @@ run_queue() {    # <- 'sm' mode      # run queue
       send_queued_mail "$(basename $M .mail)" "$NDX"     # send mail - pass {id} only
     done
   else                               # queue is empty
-    [ -z "$SENDMAIL_MODE" ] && \
-      dsp '' 'mail queue is empty (nothing to send)' ''
+      log '' 'mail queue is empty (nothing to send)' ''
   fi                                 # inform user (if not running quietly -- known as 'sendmail mode')
 }
 
@@ -448,6 +448,8 @@ enqueue_mail() { # <-- all mail args ; mail text via TMP
 ## send a mail (if possible, otherwise enqueue it)
 ## if send is successful, msmtp will also log it (if enabled in ~/.msmtprc)
 send_mail() {    # <-- all mail args ; mail text via TMP
+  local EMAIL_QUEUE_QUIET="yes"
+
   [ -z "$EMAIL_CONN_NOTEST" ] && {   # connection test
     connect_test || {
       log "mail for [ $* ] : couldn't be sent - host not connected"
