@@ -1,4 +1,4 @@
 #!/bin/bash
-$HOME/bin/msmtpq -Q
+$HOME/bin/msmtp-queue -r
 
 
