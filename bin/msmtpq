@@ -33,14 +33,15 @@
 
 ## msmtpq now uses the following environment variables :
 ##   EMAIL_CONN_NOTEST   if set will suppress any testing for a connection
-##   EMAIL_CONN_TEST     if unset or =nm will use NetworkManager (nm-online) to test for a connection
+##   EMAIL_CONN_TEST     if unset or =nm-p will try =nm and then =p (see below)
+##                       if =nm will use NetworkManager (nm-online) to test for a connection
 ##                       if =p will use a ping test (debian.org) for a connection
 ##                       if =P will use a fast ping test (8.8.8.8) for a connection
 ##                       if =n will use netcat (nc) to test for a connection
 ##                       if =s will use bash sockets to test for a connection
 ##   EMAIL_QUEUE_QUIET   if set will cause suppression of messages and 'chatter'
 
-EMAIL_CONN_TEST=nm
+EMAIL_CONN_TEST=nm-p
 
 ## two essential patches by Philipp Hartwig
 ## 19 Oct 2011 & 27 Oct 2011
@@ -173,8 +174,12 @@ lock_queue() {        # <-- '-u' to remove lockfile
 ## test whether system is connected
 ## returns t/f (0/1)
 connect_test() {
+  local EMAIL_CONN_TEST="${1:-EMAIL_CONN_TEST}"
   if [ -z "$EMAIL_CONN_TEST" ] || \
-     [ "$EMAIL_CONN_TEST" = 'nm' ] ; then                      # use NetworkManager (nm-online) test (default)
+     [ "$EMAIL_CONN_TEST" = 'nm-p' ] ; then                    # use NetworkManager (nm-online) test plus ping fallback (default)
+    connect_test nm || connect_test p || return 1
+  elif [ -z "$EMAIL_CONN_TEST" ] || \
+     [ "$EMAIL_CONN_TEST" = 'nm' ] ; then                      # use NetworkManager (nm-online) test
     # must, of course, have nm-online installed
     which nm-online >/dev/null 2>&1 || \
       log -e 1 "msmtpq : can't find nm-online executable "     # if not found - complain ; quit
@@ -254,7 +259,8 @@ send_queued_mail() {   # <-- mail id
   if [ -f "${FQP}.msmtp" ] ; then    # corresponding .msmtp file found
     [ -z "$EMAIL_CONN_NOTEST" ] && { # connection test
       connect_test || \
-        log "mail [ $2 ] [ $1 ] from queue ; couldn't be sent - host not connected"
+        ( log "mail [ $2 ] [ $1 ] from queue ; couldn't be sent - host not connected" ;
+          return 1 )
     }
 
     if $MSMTP $(< "${FQP}.msmtp") < "${FQP}.mail" ; then       # this mail goes out the door
