@@ -1,4 +1,5 @@
 #!/usr/bin/env python2
+#coding=UTF-8
 
 # ** The MIT License **
 #
@@ -148,7 +149,7 @@ Usage:
                              displayed and you're given the option to import
                              or skip it, by default everything is imported
                              quietly without any interaction
-                           - if -n is given then each event in the file is
+                           - if -d is given then each event in the file is
                              displayed and is not imported, a --cal does not
                              need to be specified for this option
 
@@ -164,24 +165,27 @@ __API_CLIENT_ID__ = '232867676714.apps.googleusercontent.com'
 __API_CLIENT_SECRET__ = '3tZSxItw6_VnZMezQwC8lUqy'
 
 # These are standard libraries and should never fail
-import sys, os, re, gflags, shlex, time
+import sys, os, re, shlex, time, calendar
 import locale, textwrap, signal
 from Queue import Queue
 from datetime import datetime, timedelta, date
 from datetime import time as dt_time
 from unicodedata import east_asian_width
 
+sys.path.append("google-api-python-client")
+
 # Required 3rd partie libraries
 try:
     from dateutil.tz import *
     from dateutil.parser import *
     from dateutil.rrule import *
+    import gflags
     import httplib2
     from apiclient.discovery import build
     from oauth2client.file import Storage
     from oauth2client.client import OAuth2WebServerFlow
     from oauth2client.tools import run
-except ImportError, e:
+except ImportError as e:
     print "ERROR: Missing module - %s" % e.args[0]
     sys.exit(1)
 
@@ -208,6 +212,8 @@ except:
         class Calendar:
             def parse(self, string):
                 return ([], 0)
+
+locale.setlocale(locale.LC_ALL,'')
 
 def Version():
     sys.stdout.write(__program__+' '+__version__+' ('+__author__+')\n')
@@ -271,23 +277,31 @@ def SetConkyColors():
 class ART:
 
     useArt = True
+    useUnicode= False
     fancy  = ''
     plain  = ''
 
     def __str__(self):
-        return self.fancy if self.useArt else self.plain
+        if self.useArt:
+            if self.useUnicode:
+                return self.unicode_fancy
+            else:
+                return self.fancy
+        else:
+            return self.plain
 
-class ART_HRZ(ART): fancy = '\033(0\x71\033(B' ; plain = '-'
-class ART_VRT(ART): fancy = '\033(0\x78\033(B' ; plain = '|'
-class ART_LRC(ART): fancy = '\033(0\x6A\033(B' ; plain = '+'
-class ART_URC(ART): fancy = '\033(0\x6B\033(B' ; plain = '+'
-class ART_ULC(ART): fancy = '\033(0\x6C\033(B' ; plain = '+'
-class ART_LLC(ART): fancy = '\033(0\x6D\033(B' ; plain = '+'
-class ART_CRS(ART): fancy = '\033(0\x6E\033(B' ; plain = '+'
-class ART_LTE(ART): fancy = '\033(0\x74\033(B' ; plain = '+'
-class ART_RTE(ART): fancy = '\033(0\x75\033(B' ; plain = '+'
-class ART_BTE(ART): fancy = '\033(0\x76\033(B' ; plain = '+'
-class ART_UTE(ART): fancy = '\033(0\x77\033(B' ; plain = '+'
+# ─ │ ┌ ┐ └ ┘ ├ ┤ ┬ ┴ ┼ 
+class ART_HRZ(ART): fancy = '\033(0\x71\033(B' ; plain = '-' ; unicode_fancy = '─'
+class ART_VRT(ART): fancy = '\033(0\x78\033(B' ; plain = '|' ; unicode_fancy = '│'
+class ART_LRC(ART): fancy = '\033(0\x6A\033(B' ; plain = '+' ; unicode_fancy = '┘'
+class ART_URC(ART): fancy = '\033(0\x6B\033(B' ; plain = '+' ; unicode_fancy = '┐'
+class ART_ULC(ART): fancy = '\033(0\x6C\033(B' ; plain = '+' ; unicode_fancy = '┌'
+class ART_LLC(ART): fancy = '\033(0\x6D\033(B' ; plain = '+' ; unicode_fancy = '└'
+class ART_CRS(ART): fancy = '\033(0\x6E\033(B' ; plain = '+' ; unicode_fancy = '┼'
+class ART_LTE(ART): fancy = '\033(0\x74\033(B' ; plain = '+' ; unicode_fancy = '├'
+class ART_RTE(ART): fancy = '\033(0\x75\033(B' ; plain = '+' ; unicode_fancy = '┤'
+class ART_BTE(ART): fancy = '\033(0\x76\033(B' ; plain = '+' ; unicode_fancy = '┴'
+class ART_UTE(ART): fancy = '\033(0\x77\033(B' ; plain = '+' ; unicode_fancy = '┬'
 
 
 def PrintErrMsg(msg):
@@ -295,7 +309,7 @@ def PrintErrMsg(msg):
 
 def PrintMsg(color, msg):
     if isinstance(msg, unicode):
-        msg = msg.encode(locale.getpreferredencoding() or "UTF-8", "ignore")
+        msg = msg.encode(locale.getlocale()[1] or "UTF-8", "ignore")
 
     if CLR.useColor:
         sys.stdout.write(str(color))
@@ -340,6 +354,10 @@ class DateTimeParser:
 
         return eTimeStart
 
+def DaysSinceEpoch(dt):
+    # Because I hate magic numbers
+    __DAYS_IN_SECONDS__ = 24 * 60 * 60
+    return calendar.timegm(dt.timetuple()) / __DAYS_IN_SECONDS__
 
 def GetTimeFromStr(eWhen, eDuration=0):
     dtp = DateTimeParser()
@@ -538,8 +556,16 @@ class gcalcli:
                         self.cals.append(cal)
                         cal['colorSpec'] = calNameColors[i]
             else:
-                self.cals.append(cal)
-                cal['colorSpec'] = None
+                self.cals = self.allCals
+
+    @staticmethod
+    def _LocalizeDateTime(dt):
+        if not hasattr(dt, 'tzinfo'):
+            return dt
+        if dt.tzinfo == None:
+            return dt.replace(tzinfo=tzlocal())
+        else:
+            return dt.astimezone(tzlocal())
 
 
     def _GoogleAuth(self):
@@ -555,8 +581,7 @@ class gcalcli:
                     OAuth2WebServerFlow(
                         client_id=self.client_id,
                         client_secret=self.client_secret,
-                        scope=['https://www.googleapis.com/auth/calendar',
-                               'https://www.googleapis.com/auth/urlshortener'],
+                        scope='https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/urlshortener',
                         user_agent=__program__+'/'+__version__),
                     storage)
 
@@ -601,7 +626,6 @@ class gcalcli:
 
         self.cache     = {}
         self.allCals   = []
-        self.allEvents = []
 
         if self.useCache:
             # note that we need to use pickle for cache data since we stuff
@@ -610,7 +634,6 @@ class gcalcli:
                 with open(cacheFile, 'rb') as _cache_:
                     self.cache     = pickle.load(_cache_)
                     self.allCals   = self.cache['allCals']
-                    self.allEvents = self.cache['allEvents']
                 # XXX assuming data is valid, need some verification check here
                 return
             except IOError:
@@ -639,71 +662,8 @@ class gcalcli:
                            cmp(order[x['accessRole']],
                                order[y['accessRole']]))
 
-        # Assume visibility is off if not present, but if hidden is missing assume it's visible.
-        self.allCals = [x for x in self.allCals if x.get('selected', False) and not x.get('hidden', False)]
-        for cal in self.allCals:
-            events = self._CalService().events().\
-                     list(calendarId = cal['id'],
-                          singleEvents = False).execute()
-
-            while True:
-                if 'items' not in events:
-                    break
-
-                for event in events['items']:
-
-                    event['gcalcli_cal'] = cal
-
-                    if 'status' in event and event['status'] == 'cancelled':
-                        continue
-
-                    if 'dateTime' in event['start']:
-                        event['s'] = parse(event['start']['dateTime'])
-                    else:
-                        # all day events
-                        event['s'] = parse(event['start']['date'])
-
-                    if event['s'].tzinfo == None:
-                        event['s'] = event['s'].replace(tzinfo=tzlocal())
-                    else:
-                        event['s'] = event['s'].astimezone(tzlocal())
-
-                    if 'dateTime' in event['end']:
-                        event['e'] = parse(event['end']['dateTime'])
-                    else:
-                        # all day events
-                        event['e'] = parse(event['end']['date'])
-
-                    if event['e'].tzinfo == None:
-                        event['e'] = event['e'].replace(tzinfo=tzlocal())
-                    else:
-                        event['e'] = event['e'].astimezone(tzlocal())
-
-                    # http://en.wikipedia.org/wiki/Year_2038_problem
-                    # Catch the year 2038 problem here as the python dateutil
-                    # module can choke throwing a ValueError exception. If
-                    # either the start or end time for an event has a year
-                    # '>= 2038' dump it.
-                    if event['s'].year >= 2038 or event['e'].year >= 2038:
-                        continue
-
-                    self.allEvents.append(event)
-
-                pageToken = events.get('nextPageToken')
-                if pageToken:
-                    events = self._CalService().events().\
-                             list(calendarId = cal['id'],
-                                  singleEvents = False,
-                                  pageToken = pageToken).execute()
-                else:
-                    break
-
-        # sort all events across all calendars together
-        self.allEvents.sort(lambda x, y: cmp(x['s'], y['s']))
-
         if self.useCache:
             self.cache['allCals']   = self.allCals
-            self.cache['allEvents'] = self.allEvents
             with open(cacheFile, 'wb') as _cache_:
                 pickle.dump(self.cache, _cache_)
 
@@ -772,7 +732,13 @@ class gcalcli:
                     tmpTimeStr = ''
                 else:
                     if not nowMarkerPrinted:
-                        if self.now <= event['s']:
+                        if self.now.day < event['s'].day:
+                          nowMarkerPrinted = True
+                          weekEventStrings[dayNum-1] += \
+                                ("\n" +
+                                 str(self.nowMarkerColor) +
+                                 (self.calWidth * '-'))
+                        elif DaysSinceEpoch(self.now) < DaysSinceEpoch(event['s']):
                             # add a line marker before next event
                             nowMarkerPrinted = True
                             weekEventStrings[dayNum] += \
@@ -816,7 +782,7 @@ class gcalcli:
         # so we convert them to unicode and then check their size. Fixes
         # the output issues we were seeing around non-US locale strings
         if not isinstance(string, unicode):
-            string = unicode(string, locale.getpreferredencoding() or "UTF-8")
+            string = unicode(string, locale.getlocale()[1] or "UTF-8")
         printLen = 0
         for tmpChar in string:
             printLen += self.UNIWIDTH[east_asian_width(tmpChar)]
@@ -828,7 +794,7 @@ class gcalcli:
         idx = 0
         printLen = 0
         if not isinstance(string, unicode):
-            string = unicode(string, locale.getpreferredencoding() or "UTF-8")
+            string = unicode(string, locale.getlocale()[1] or "UTF-8")
         for tmpChar in string:
             if (curPrintLen + printLen) >= self.calWidth:
                 return (printLen, idx, True)
@@ -1072,8 +1038,8 @@ class gcalcli:
                     printLen, cut = self._GetCutIndex(weekEventStrings[j])
                     padding = ' ' * (self.calWidth - printLen)
 
-                    line += (weekColorStrings[j] +
-                             weekEventStrings[j][:cut] +
+                    line += (weekColorStrings[j].encode(locale.getpreferredencoding() or "UTF-8", "ignore") +
+                             weekEventStrings[j][:cut].encode(locale.getpreferredencoding() or "UTF-8", "ignore") +
                              padding +
                              str(CLR_NRM()))
                     weekEventStrings[j] = weekEventStrings[j][cut:]
@@ -1178,7 +1144,7 @@ class gcalcli:
             PrintMsg(self._CalendarColor(event['gcalcli_cal']), fmt %
                      ('', self._ValidTitle(event).strip()))
         else:
-            fmt = '  ' + timeFormat + '  %s\n'
+            fmt = ' ' + timeFormat + '\n%s\n'
 #            if 'summary' not in event:
 #                dprint(event)
             PrintMsg(self._CalendarColor(event['gcalcli_cal']), fmt %
@@ -1333,14 +1299,14 @@ class gcalcli:
                 val = raw_input()
                 if val.strip():
                     event['summary'] = \
-                        unicode(val.strip(), locale.getpreferredencoding() or "UTF-8")
+                        unicode(val.strip(), locale.getlocale()[1] or "UTF-8")
 
             elif val.lower() == 'l':
                 PrintMsg(CLR_MAG(), "Location: ")
                 val = raw_input()
                 if val.strip():
                     event['location'] = \
-                        unicode(val.strip(), locale.getpreferredencoding() or "UTF-8")
+                        unicode(val.strip(), locale.getlocale()[1] or "UTF-8")
 
             elif val.lower() == 'w':
                 PrintMsg(CLR_MAG(), "When: ")
@@ -1387,7 +1353,7 @@ class gcalcli:
                 val = raw_input()
                 if val.strip():
                     event['description'] = \
-                        unicode(val.strip(), locale.getpreferredencoding() or "UTF-8")
+                        unicode(val.strip(), locale.getlocale()[1] or "UTF-8")
 
             else:
                 PrintErrMsg('Error: invalid input\n')
@@ -1405,7 +1371,7 @@ class gcalcli:
             return
 
         # 10 chars for day and length must match 'indent' in _PrintEvent
-        dayFormat = '\n%F' if yearDate else '\n%a %b %d'
+        dayFormat = '\n%F' if yearDate else '\n%Y-%m-%d'
         day = ''
 
         for event in eventList:
@@ -1504,20 +1470,14 @@ class gcalcli:
                 else:
                     event['s'] = parse(event['start']['date']) # all date events
 
-                if event['s'].tzinfo == None:
-                    event['s'] = event['s'].replace(tzinfo=tzlocal())
-                else:
-                    event['s'] = event['s'].astimezone(tzlocal())
+                event['s'] = self._LocalizeDateTime(event['s'])
 
                 if 'dateTime' in event['end']:
                     event['e'] = parse(event['end']['dateTime'])
                 else:
                     event['e'] = parse(event['end']['date']) # all date events
 
-                if event['e'].tzinfo == None:
-                    event['e'] = event['e'].replace(tzinfo=tzlocal())
-                else:
-                    event['e'] = event['e'].astimezone(tzlocal())
+                event['e'] = self._LocalizeDateTime(event['e'])
 
                 # For all-day events, Google seems to assume that the event time
                 # is based in the UTC instead of the local timezone.  Here we
@@ -1752,7 +1712,7 @@ class gcalcli:
         self._GraphEvents(cmd, start, count, eventList)
 
 
-    def QuickAddEvent(self, eventText, reminder=None):
+    def QuickAddEvent(self, eventText, reminder=None, description=None):
 
         if eventText == '':
             return
@@ -1776,6 +1736,15 @@ class gcalcli:
                              eventId = newEvent['id'],
                              body = rem).execute()
 
+        if description:
+            desc = {}
+            desc['description'] = unicode(description, locale.getpreferredencoding() or "UTF-8")
+
+            newEvent = self._CalService().events().\
+                       patch(calendarId = self.cals[0]['id'],
+                             eventId = newEvent['id'],
+                             body = desc).execute()
+
         if self.detailUrl:
             hLink = self._ShortenURL(newEvent['htmlLink'])
             PrintMsg(CLR_GRN(), 'New event added: %s\n' % hLink)
@@ -1788,15 +1757,15 @@ class gcalcli:
             return
 
         event = {}
-        event['summary'] = unicode(eTitle, locale.getpreferredencoding() or "UTF-8")
+        event['summary'] = unicode(eTitle, locale.getlocale()[1] or "UTF-8")
         event['start']   = { 'dateTime' : eStart,
                              'timeZone' : self.cals[0]['timeZone'] }
         event['end']     = { 'dateTime' : eEnd,
                              'timeZone' : self.cals[0]['timeZone'] }
         if eWhere:
-            event['location'] = unicode(eWhere, locale.getpreferredencoding() or "UTF-8")
+            event['location'] = unicode(eWhere, locale.getlocale()[1] or "UTF-8")
         if eDescr:
-            event['description'] = unicode(eDescr, locale.getpreferredencoding() or "UTF-8")
+            event['description'] = unicode(eDescr, locale.getlocale()[1] or "UTF-8")
         if reminder:
             event['reminders'] = {'useDefault' : False,
                                   'overrides'  : [{'minutes' : reminder,
@@ -1903,17 +1872,25 @@ class gcalcli:
                 PrintErrMsg("Error: event does not have a dtstart and dtend!\n")
                 return None
 
-            DebugPrint("DTSTART: %s\n" % ve.dtstart.value.isoformat())
-            DebugPrint("DTEND: %s\n" % ve.dtend.value.isoformat())
+            if ve.dtstart.value:
+                DebugPrint("DTSTART: %s\n" % ve.dtstart.value.isoformat())
+            if ve.dtend.value:
+                DebugPrint("DTEND: %s\n" % ve.dtend.value.isoformat())
+            if verbose:
+                if ve.dtstart.value:
+                    print "Start........%s" % ve.dtstart.value.isoformat()
+                if ve.dtend.value:
+                    print "End..........%s" % ve.dtend.value.isoformat()
+                if ve.dtstart.value:
+                    print "Local Start..%s" % self._LocalizeDateTime(ve.dtstart.value)
+                if ve.dtend.value:
+                    print "Local End....%s" % self._LocalizeDateTime(ve.dtend.value)
 
             if hasattr(ve, 'rrule'):
                 DebugPrint("RRULE: %s\n" % ve.rrule.value)
                 event['recurrence'] = [ "RRULE:" + ve.rrule.value ]
 
-            if hasattr(ve, 'dtstart') and hasattr(ve, 'dtend'):
-                start = ve.dtstart.value.isoformat()
-                end   = ve.dtend.value.isoformat()
-
+            if hasattr(ve, 'dtstart') and ve.dtstart.value:
                 # XXX
                 # Timezone madness! Note that we're using the timezone for the
                 # calendar being added to. This is OK if the event is in the
@@ -1929,23 +1906,32 @@ class gcalcli:
                 # print dir(ve.dtstart.value.tzinfo)
                 # print vars(ve.dtstart.value.tzinfo)
 
-                if hasattr(ve.dtstart.value, 'astimezone') and hasattr(ve.dtend.value, 'astimezone'):
-                    event['start'] = { 'dateTime' : ve.dtstart.value.isoformat(),
+                start = ve.dtstart.value.isoformat()
+                if isinstance(ve.dtstart.value, datetime):
+                    event['start'] = { 'dateTime' : start,
                                        'timeZone' : self.cals[0]['timeZone'] }
                                        #'timeZone' : ve.dtstart.value.tzinfo._tzid }
-                    event['end']   = { 'dateTime' : ve.dtend.value.isoformat(),
-                                       'timeZone' : self.cals[0]['timeZone'] }
-                                       #'timeZone' : ve.dtend.value.tzinfo._tzid }
                 else:
-                    # All day events, denoted as datetime.date objects, need only the 'date' field
-                    # to be inserted into the Google Calendar API v3
-                    event['start'] = { 'date' : ve.dtstart.value.isoformat() }
-                    event['end']   = { 'date' : ve.dtend.value.isoformat() } 
+                    event['start'] = { 'date': start }
 
                 if reminder:
                     event['reminders'] = {'useDefault' : False,
                                           'overrides'  : [{'minutes' : reminder,
                                                            'method'  : 'popup'}]}
+
+                # Can only have an end if we have a start, but not the other way
+                # around apparently...  If there is no end, use the start date
+                if hasattr(ve, 'dtend') and ve.dtend.value:
+                    end   = ve.dtend.value.isoformat()
+                    if isinstance(ve.dtend.value, datetime):
+                        event['end']   = { 'dateTime' : end,
+                                           'timeZone' : self.cals[0]['timeZone'] }
+                                           #'timeZone' : ve.dtend.value.tzinfo._tzid }
+                    else:
+                        event['end'] = { 'date': end }
+
+                else:
+                    event['end'] = event['start']
 
             if hasattr(ve, 'description') and ve.description.value.strip():
                 descr = ve.description.value.strip()
@@ -1966,6 +1952,7 @@ class gcalcli:
             if hasattr(ve, 'attendee_list'):
                 DebugPrint("ATTENDEE_LIST : %s\n" % ve.attendee_list)
                 event['attendees'] = []
+                event['description'] = event['description'] + u'attendees: '
                 for attendee in ve.attendee_list:
                     if attendee.value.upper().startswith("MAILTO:"):
                         email = attendee.value[7:]
@@ -1974,8 +1961,10 @@ class gcalcli:
 
                     event['attendees'].append({ 'displayName' : attendee.name,
                                                 'email'       : email })
+                    event['description'] = event['description'] + email + u', '
+
             if verbose:
-                PrintVobjEvent(ve);
+                PrintVobjEvent(ve)
 
             return event
 
@@ -2325,7 +2314,7 @@ gflags.DEFINE_bool("started", True, "Show events that have started")
 gflags.DEFINE_integer("width", 10, "Set output width", short_name="w")
 gflags.DEFINE_bool("monday", False, "Start the week on Monday")
 gflags.DEFINE_bool("color", True, "Enable/Disable all color output")
-gflags.DEFINE_bool("lineart", True, "Enable/Disable line art")
+gflags.DEFINE_enum("lineart", "plain", ["plain", "fancy", "unicode"], "Sets the type of lineart to use")
 gflags.DEFINE_bool("conky", False, "Use Conky color codes")
 
 gflags.DEFINE_string("color_owner", "cyan", "Color for owned calendars")
@@ -2387,7 +2376,7 @@ def BowChickaWowWow():
             tmpArgv = [argv[0], "--flagfile=~/.gcalclirc"] + argv[1:]
         else:
             tmpArgv = argv
-        args = FLAGS(tmpArgv[1:])
+        args = FLAGS(tmpArgv)
     except gflags.FlagsError, e:
         PrintErrMsg(str(e))
         Usage(True)
@@ -2419,8 +2408,15 @@ def BowChickaWowWow():
     if not FLAGS.color:
         CLR.useColor = False
 
-    if not FLAGS.lineart:
+    if FLAGS.lineart == "unicode":
+        ART.useArt = True
+        ART.useUnicode = True
+    elif FLAGS.lineart == "fancy":
+        ART.useArt = True
+        ART.useUnicode = False
+    else:
         ART.useArt = False
+        ART.useUnicode = False
 
     if FLAGS.conky:
         SetConkyColors()
@@ -2530,7 +2526,7 @@ def BowChickaWowWow():
             sys.exit(1)
 
         # allow unicode strings for input
-        gcal.TextQuery(unicode(args[1], locale.getpreferredencoding() or "UTF-8"))
+        gcal.TextQuery(unicode(args[1], locale.getlocale()[1] or "UTF-8"))
 
         sys.stdout.write('\n')
 
@@ -2607,8 +2603,8 @@ def BowChickaWowWow():
             sys.exit(1)
 
         # allow unicode strings for input
-        gcal.QuickAddEvent(unicode(args[1], locale.getpreferredencoding() or "UTF-8"),
-                           reminder=FLAGS.reminder)
+        gcal.QuickAddEvent(unicode(args[1], locale.getlocale()[1] or "UTF-8"),
+                           reminder=FLAGS.reminder, description=FLAGS.description)
 
     elif (args[0] == 'add'):
         if FLAGS.title == None and FLAGS.prompt:
@@ -2641,7 +2637,7 @@ def BowChickaWowWow():
             sys.exit(1)
 
         # allow unicode strings for input
-        gcal.DeleteEvents(unicode(args[1], locale.getpreferredencoding() or "UTF-8"),
+        gcal.DeleteEvents(unicode(args[1], locale.getlocale()[1] or "UTF-8"),
                           FLAGS.iamaexpert)
 
         sys.stdout.write('\n')
@@ -2652,7 +2648,7 @@ def BowChickaWowWow():
             sys.exit(1)
 
         # allow unicode strings for input
-        gcal.EditEvents(unicode(args[1], locale.getpreferredencoding() or "UTF-8"))
+        gcal.EditEvents(unicode(args[1], locale.getlocale()[1] or "UTF-8"))
 
         sys.stdout.write('\n')
 
