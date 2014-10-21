@@ -2292,6 +2292,7 @@ gflags.DEFINE_string("client_secret", __API_CLIENT_SECRET__, "API client_secret"
 gflags.DEFINE_string("configFolder", None, "Optional directory to load/store all configuration information")
 gflags.DEFINE_bool("includeRc", False, "Whether to include ~/.gcalclirc when using configFolder")
 gflags.DEFINE_multistring("calendar", [], "Which calendars to use")
+gflags.DEFINE_multistring("calendar_color", [], "Colors for calendars (same format as --calendar, but only affects colorisations, not list of which calendars to apply action(s) to -- e.g., 'quick' requires just one calendar but you might have more than one --calendar-color set in .gcalclitrc")
 gflags.DEFINE_bool("military", False, "Use 24 hour display")
 
 # Single --detail that allows you to specify what parts you want
@@ -2459,8 +2460,21 @@ def BowChickaWowWow():
     calNames = []
     calNameColors = []
     calColors = GetCalColors(FLAGS.calendar)
+    calColors.update(GetCalColors(FLAGS.calendar_color))
+
+    calendar_args = [arg for arg in sys.argv if arg.startswith("--calendar")]
+    if calendar_args:
+        calNamesOnCommandLine = []
+        for calendar_arg in calendar_args:
+            calNamesOnCommandLine.append(calendar_arg.split("=")[1])
+        sys.stderr.write("filtering calNames from {} to {} due to being the only ones mentioned on the command line\n".format(
+            FLAGS.calendar, calNamesOnCommandLine))
+        calendars = calNamesOnCommandLine
+    else:
+        calendars = FLAGS.calendar
+
     calNamesFiltered = []
-    for calName in FLAGS.calendar:
+    for calName in calendars:
         calNameSimple = calName.split("#")[0]
         calNamesFiltered.append(calNameSimple)
         calNameColors.append(calColors[calNameSimple])
