@@ -11,6 +11,7 @@ remindme at 17:00 about buying milk
 remindme on 15 april to file taxes
 """
 
+import dateutil.parser
 import os
 import pwd
 import sys
@@ -49,4 +50,29 @@ at_stdin.write(mail_cmd)
 at_stdin.write(os.linesep)
 at_stdin.close()
 
+at_stdout = at_stdout.read()
+at_stderr = at_stderr.read()
+at_output = at_stderr
 
+if not at_output.startswith("job "):
+   msg = "at_cmd {!r} with input {!r} failed with stdout={!r} and stderr={!r}" \
+      .format(at_cmd, mail_cmd, at_stdout, at_stderr)
+   raise RuntimeError(msg)
+
+at_output_parts = at_output.split(" ")
+at_job_id = at_output_parts[1]
+at_job_time = " ".join(at_output_parts[3:])
+
+google_time = dateutil.parser.parse(at_job_time).strftime("%Y-%m-%d %H:%M %p")
+
+# gcal quick --detail_all --calendar="Martin Dengler"
+#  'what, 'where,' and 'when' - from https://support.google.com/calendar/answer/36604?hl=en#text
+what = " ".join(mail_parts)
+where = ""
+when = "on {}".format(google_time)
+
+gcal_cmd = 'gcal quick --detail_all --calendar="Martin Dengler" "{} {} {}"'.format(what, where, when)
+#gcal_stdin, gcal_stdout, gcal_stderr = os.popen3(gcal_cmd)
+#gcal_stdin.close()
+sys.stderr.write("{}\n".format(gcal_cmd))
+os.system(gcal_cmd)
