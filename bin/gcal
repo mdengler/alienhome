@@ -2467,8 +2467,6 @@ def BowChickaWowWow():
         calNamesOnCommandLine = []
         for calendar_arg in calendar_args:
             calNamesOnCommandLine.append(calendar_arg.split("=")[1])
-        sys.stderr.write("filtering calNames from {} to {} due to being the only ones mentioned on the command line\n".format(
-            FLAGS.calendar, calNamesOnCommandLine))
         calendars = calNamesOnCommandLine
     else:
         calendars = FLAGS.calendar
