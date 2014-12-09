@@ -23,7 +23,7 @@ if args[0] == "at" or args[0] == "on":
 
 aboutidx = None
 if "about" in args:
-   aboutidx =args.index("about")
+   aboutidx = args.index("about")
 toidx = None
 if "to" in args:
    toidx =args.index("to")
