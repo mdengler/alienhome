@@ -16,8 +16,6 @@ shopt -s histappend
 PROMPT_COMMAND='history -a'
 export IGNOREEOF=1
 
-export GREP_OPTIONS='--color=auto'
-
 export PATH=$HOME/.local/bin:$PATH
 export PATH=$HOME/bin:$PATH
 
