@@ -12,8 +12,9 @@ export HISTSIZE=1000000
 export HISTFILESIZE=1000000000
 
 # from http://www.ukuug.org/events/linux2003/papers/bash_tips/
+# and http://superuser.com/a/734410/250287
 shopt -s histappend
-PROMPT_COMMAND='history -a'
+export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
 export IGNOREEOF=1
 
 export PATH=$HOME/.local/bin:$PATH
