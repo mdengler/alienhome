@@ -41,7 +41,7 @@ my_uid = os.geteuid()
 my_username = pwd.getpwuid(my_uid)[0]
 
 mail_parts = args[parts_split + 1:]
-mail_cmd = "echo | mail -s '%s' %s" % (" ".join(mail_parts), my_username)
+mail_cmd = "#!/bin/sh\necho | mail -s '%s' %s" % (" ".join(mail_parts), my_username)
 
 os.chdir("/")
 
@@ -53,6 +53,10 @@ at_stdin.close()
 at_stdout = at_stdout.read()
 at_stderr = at_stderr.read()
 at_output = at_stderr
+
+sh_warning = "warning: commands will be executed using /bin/sh\n"
+if at_output.startswith(sh_warning):
+   at_output = at_output.replace(sh_warning, "")
 
 if not at_output.startswith("job "):
    msg = "at_cmd {!r} with input {!r} failed with stdout={!r} and stderr={!r}" \
