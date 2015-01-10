@@ -71,7 +71,6 @@
  '(message-sendmail-f-is-evil t)
  '(message-user-fqdn "martindengler.com")
  '(next-line-add-newlines nil)
- '(p4-verbose nil)
  '(paren-mode (quote sexp) nil (paren))
  '(pr-ps-printer-alist (quote ((default "lpr" nil "-P" ""))))
  '(ps-paper-type (quote a4))
