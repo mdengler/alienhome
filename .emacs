@@ -73,8 +73,6 @@
  '(pr-ps-printer-alist (quote ((default "lpr" nil "-P" ""))))
  '(ps-paper-type (quote a4))
  '(ps-printer-name nil)
- '(python-python-command "python-python-command.bat")
- '(python-shell-interpreter "python-python-command.bat")
  '(rcirc-server-alist (quote (("irc.freenode.net" :channels ("#rcirc" "#bash" "#clojure" "#python") :encryption tls))))
  '(remember-mailbox "~/Maildir/todo")
  '(remote-shell-program "ssh")
