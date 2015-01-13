@@ -237,21 +237,6 @@
 ;; Library loading
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;
-;
-;
-;
-;(setenv "CVSROOT" "")
-;(setenv "CVS_DIR" "")
-;(setenv "CVS_PASSFILE" (concat (getenv "CVS_DIR") "/.cvspass"))
-;(setenv "CVS" (concat (getenv "CVS_DIR") ""))
-
-; (setenv "PATH" (concat "H:\\bin;H:\\Git\\cmd;H:\\Git\\bin;H:\\" (getenv "PATH")))
-; (setenv "PYTHONPATH" (concat (getenv "PYTHONPATH") ";H:\\mmm\\emacs-24.3\\etc"))
-; (setenv "PYTHONSTARTUP" "H:\\.pythonrc")
-; (let ((default-directory "~/.emacs.d/site-lisp/")) (normal-top-level-add-subdirs-to-load-path))
-
-
 (let ((default-directory (concat user-emacs-directory
                                  (convert-standard-filename "site-lisp/"))))
   (normal-top-level-add-to-load-path '("."))
