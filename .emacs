@@ -693,18 +693,6 @@
                                 ; (java-mode . "eclipse")
                                 (other . "gnu"))))
 
-;;
-;; mail email smtp msmtpq sendmail
-;;
-;; from http://permalink.gmane.org/gmane.emacs.gnus.general/69846
-
-(setq message-send-mail-function 'message-send-mail-with-sendmail)
-(setq sendmail-program (expand-file-name "~/bin/msmtpQ")
-      mail-specify-envelope-from t
-;; needed for debians message.el cf. README.Debian.gz
-      message-sendmail-f-is-evil nil
-      mail-envelope-from 'header
-      message-sendmail-envelope-from 'header)
 
 
 ;;
