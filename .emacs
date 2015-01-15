@@ -832,6 +832,25 @@
 (define-key global-map "\M-Q" 'unfill-paragraph)
 (define-key global-map "\C-\M-q" 'unfill-region)
 
+
+; from http://stackoverflow.com/questions/12866308/include-date-and-time-of-original-message-in-quoted-reply-using-emacs-and-gnus
+(defun mtd-citation-line ()
+  "Inserts name, email, and date"
+  (when message-reply-headers
+    (insert "On "
+        (format-time-string "%a, %b %e, %Y at %r"
+                (date-to-time (mail-header-date message-reply-headers)))
+        ", "
+        (or (gnus-extract-address-component-name (mail-header-from message-reply-headers))
+        "Martin Dengler")
+        (format " <%s>"
+            (or (gnus-extract-address-component-email (mail-header-from message-reply-headers))
+            "martin@martindengler.com"))
+        " wrote:\n")))
+
+;(setq message-citation-line-function 'mtd-citation-line)
+
+
 ;(load-library "~/.emacs.d/site-lisp/zenburn.el")
 ;(color-theme-zenburn)
 ;(setq eval-expression-debug-on-error t)
