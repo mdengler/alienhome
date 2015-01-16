@@ -275,125 +275,27 @@
             nil)))
 (put 'with-library 'lisp-indent-function 1)
 
-(with-library color-theme
-  (with-library zenburn (color-theme-zenburn)))
-
-;; desktop mode lets us saves buffer state. activate it with M-x desktop-save RET.
-(with-library desktop (desktop-save-mode 1))
-
-(with-library graphviz-dot-mode
-  (add-to-list 'auto-mode-alist '("\\.dot$" . graphviz-dot-mode)))
-
-
-(with-library blank-mode ())
-
-(with-library w3m ())
-(with-library w3m-session ())
-(with-library w3m-cookie ())
-
-
-(with-library package
-  (add-to-list 'package-archives
-               '("marmalade" . "http://marmalade-repo.org/packages/"))
-  (add-to-list 'package-archives
-               '("melpa" . "http://melpa.milkbox.net/packages/") t)
-  (package-initialize))
-
-
-(with-library clojure-mode
-  ;; swank-clojure
-  (require 'swank-clojure-autoload)
-  (swank-clojure-config
-   (setq swank-clojure-jar-path "~/.clojure/clojure.jar")
-   (setq swank-clojure-extra-classpaths
-         (list "~/.clojure/clojure-contrib.jar")))
-  ;; slime
-  (eval-after-load "slime"
-    '(progn (slime-setup '(slime-repl))))
-
-;(require 'slime)
-)
-
-;; from http://bc.tech.coop/blog/040306.html
-(with-library slime
-  (require 'slime)
-  (add-hook 'lisp-mode-hook (lambda () (slime-mode t)))
-  (add-hook 'inferior-lisp-mode-hook (lambda () (inferior-slime-mode t)))
-  ;; If you don't want eldoc-like behavior, comment out the following line
-  ;;(slime-autodoc-mode)
-
-  ;; from IRC
-  (define-key slime-mode-map [tab] 'slime-indent-and-complete-symbol)
-
-  ;; GNU CLISP - http://clisp.cons.org/
-  (defun clisp-start ()
-    (interactive)
-    (shell-command (concat "/usr/bin/clisp -K full "
-                           "-B /usr/lib64/clisp "
-                           "-ansi -q -q&")))
-
-  (slime-setup))
 
 (with-library anything ())
 (with-library anything-config ())
-(with-library anything-ipython
-  (with-library anything-show-completion
-    (use-anything-show-completion 'anything-ipython-complete
-				  '(length initial-pattern))))
 
-(with-library cosmetic ())
+(with-library auto-complete
+  (global-auto-complete-mode t)
 
-(with-library dircolors ())
+  (with-library auto-complete-yasnippet)
+  (with-library auto-complete-python)
+  (with-library ac-python)
+  (with-library auto-complete-css)
+  (with-library auto-complete-cpp)
+  (with-library auto-complete-emacs-lisp)
+  (with-library auto-complete-semantic)
+  (with-library auto-complete-gtags)
 
-(with-library edit-server
-  (edit-server-start))
-
-(with-library highlight ())
-
-(with-library hippie-exp
-  (global-set-key "\M-/" 'hippie-expand))
-
-(with-library htmlize ())
-
-(with-library linum ())
-
-(with-library org ())
-
-(with-library parenface ())
-
-(with-library paredit ())
-
-(with-library rainbow-delimiters
-  (rainbow-delimiters-mode)
-  (add-hook 'lisp-mode-hook (lambda () (rainbow-delimiters-mode t)))
-  (add-hook 'emacs-lisp-mode-hook (lambda () (rainbow-delimiters-mode t)))
-  (add-hook 'clojure-mode-hook (lambda () (rainbow-delimiters-mode t)))
-  (add-hook 'scala-mode-hook (lambda () (rainbow-delimiters-mode t)))
-; rainbow-delimiters-mode is too slow for python in edge's emacs
-;  (add-hook 'python-mode-hook (lambda () (rainbow-delimiters-mode t)))
-  (add-hook 'REPL-mode-hook (lambda () (rainbow-delimiters-mode t)))
-  )
-
-(with-library rainbow-parens (rainbow-paren-mode))
-
-(with-library scala-mode
-  (require 'scala-mode-auto)
-  (add-hook 'scala-mode-hook '(lambda () (scala-mode-feature-electric-mode)))
-  (add-to-list 'auto-mode-alist '("\\.scala$" . scala-mode)))
-
-(with-library ensime
-  (add-hook 'scala-mode-hook 'ensime-scala-mode-hook))
-
-(with-library server (server-start))
-
-(with-library shebang ())
-
-(with-library smooth-scrolling ())
-
-(with-library tracker-dired
-  (global-set-key "\C-x\C-t" 'tracker-dired))
-
-(with-library tramp ())
+  (global-auto-complete-mode t)
+  (setq ac-auto-start 3)
+  (setq ac-dwim t)
+  (set-default 'ac-sources '(ac-source-yasnippet ac-source-abbrev ac-source-words-in-buffer ac-source-files-in-current-dir ac-source-symbols))
+    )
 
 
 ;; from http://emacs-fu.blogspot.com/2009/08/managing-e-mail-addresses-with-bbdb.html
@@ -424,45 +326,155 @@
    '(( "From" . "no.?reply\\|DAEMON\\|daemon\\|facebookmail\\|twitter")))
   )
 
-
-
-(with-library windmove ())
-
-(with-library zeitgeist ())
-
+(with-library blank-mode ())
 
 ;; from http://emacs-fu.blogspot.com/2009/01/e-mail-with-emacs-using-mutt.html
-
 (with-library cl
   (with-library post
     (add-hook 'mail-mode-hook 'post-mode)))
 
-(setq mail-mode-hook nil)
+;(setq mail-mode-hook nil)
 
-(with-library R
-  (add-to-list 'auto-mode-alist '("\\.R$" . R-mode)))
+(with-library clojure-mode
+  (with-library cider
+    (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode 'subword-mode 'smartparens-strict-mode)))
 
-(with-library git-tools ())
+(with-library color-theme
+  (with-library zenburn (color-theme-zenburn)))
 
-(with-library highlight-symbol
-  (add-hook 'python-mode-hook highlight-symbol-mode))
+(with-library cosmetic ())
+
+;; desktop mode lets us saves buffer state. activate it with M-x desktop-save RET.
+(with-library desktop (desktop-save-mode 1))
+
+(with-library dev-p4 ())
+
+(with-library dircolors ())
+
+(with-library edit-server
+  (edit-server-start))
 
 (with-library fci-mode
   (add-hook 'python-mode-hook fci-mode))
 
-(with-library w32-registry
-  (eval-after-load "url"
-  '(progn
-     (require 'w32-registry)
-     (defadvice url-retrieve (before
-                              w32-set-proxy-dynamically
-                              activate)
-       "Before retrieving a URL, query the IE Proxy settings, and use them."
-       (let ((proxy (w32reg-get-ie-proxy-config)))
-         (setq url-using-proxy proxy
-               url-proxy-services proxy)))))
-  ; (ad-deactivate #'url-retrieve)
+(with-library graphviz-dot-mode ())
+
+(with-library highlight ())
+
+(with-library highlight-symbol
+  (add-hook 'python-mode-hook highlight-symbol-mode))
+
+(with-library hippie-exp
+  (global-set-key "\M-/" 'hippie-expand))
+
+(with-library htmlize ())
+
+(with-library linum ())
+
+(with-library mu4e
+  (require 'mu4e-maildirs-extension)
+  (mu4e-maildirs-extension))
+
+(with-library org ())
+
+(with-library package
+  (add-to-list 'package-archives
+               '("marmalade" . "http://marmalade-repo.org/packages/"))
+  (add-to-list 'package-archives
+               '("melpa" . "http://melpa.milkbox.net/packages/") t)
+  (package-initialize))
+
+(with-library parenface ())
+
+(with-library paredit ())
+
+(with-library pymacs
+;(setq auto-mode-alist (cons '("\\.py$" . python-mode) auto-mode-alist))
+  (setq interpreter-mode-alist(cons '("python" . python-mode) interpreter-mode-alist))
+;(setq py-python-command "python3")
+;(autoload 'python-mode "python-mode" "Python editing mode." t)
+
+;; pymacs settings
+;(setq pymacs-python-command py-python-command)
+  (autoload 'pymacs-load "pymacs" nil t)
+  (autoload 'pymacs-eval "pymacs" nil t)
+  (autoload 'pymacs-apply "pymacs")
+  (autoload 'pymacs-call "pymacs")
+
+  (with-library pycomplete)
   )
+
+(with-library R
+  (add-to-list 'auto-mode-alist '("\\.R$" . R-mode)))
+
+(with-library rainbow-delimiters
+  (rainbow-delimiters-mode)
+  (add-hook 'lisp-mode-hook (lambda () (rainbow-delimiters-mode t)))
+  (add-hook 'emacs-lisp-mode-hook (lambda () (rainbow-delimiters-mode t)))
+  (add-hook 'clojure-mode-hook (lambda () (rainbow-delimiters-mode t)))
+; rainbow-delimiters-mode is too slow for python in edge's emacs
+;  (add-hook 'python-mode-hook (lambda () (rainbow-delimiters-mode t)))
+  (add-hook 'REPL-mode-hook (lambda () (rainbow-delimiters-mode t)))
+  )
+
+(with-library rainbow-parens (rainbow-paren-mode))
+
+(with-library readline-complete ())
+
+(with-library scala-mode
+  (require 'scala-mode-auto)
+  (add-hook 'scala-mode-hook '(lambda () (scala-mode-feature-electric-mode)))
+  (add-to-list 'auto-mode-alist '("\\.scala$" . scala-mode)))
+
+(with-library ensime
+  (add-hook 'scala-mode-hook 'ensime-scala-mode-hook))
+
+(with-library server (server-start))
+
+(with-library shebang ())
+
+;; from http://bc.tech.coop/blog/040306.html
+(with-library slime
+  (require 'slime)
+  (add-hook 'lisp-mode-hook (lambda () (slime-mode t)))
+  (add-hook 'inferior-lisp-mode-hook (lambda () (inferior-slime-mode t)))
+  ;; If you don't want eldoc-like behavior, comment out the following line
+  ;;(slime-autodoc-mode)
+
+  ;; from IRC
+  (define-key slime-mode-map [tab] 'slime-indent-and-complete-symbol)
+
+  ;; GNU CLISP - http://clisp.cons.org/
+  (defun clisp-start ()
+    (interactive)
+    (shell-command (concat "/usr/bin/clisp -K full "
+                           "-B /usr/lib64/clisp "
+                           "-ansi -q -q&")))
+
+  (slime-setup))
+
+(with-library smartparens ())
+
+(with-library smooth-scrolling ())
+
+;; (with-library svg-mode-line-themes
+;;   (smt/enable)
+;;   (smt/set-theme 'diesel)
+;;   (set-face-attribute 'mode-line nil :box nil)
+;;   (set-face-attribute 'mode-line-inactive nil :box nil))
+
+(with-library tracker-dired
+  (global-set-key "\C-xt" 'tracker-dired))
+
+(with-library tramp ())
+
+(with-library w3m ())
+(with-library w3m-session ())
+(with-library w3m-cookie ())
+
+(with-library windmove ())
+
+(with-library zeitgeist ())
 
 ;; probably should be the last library loaded
 (with-library ffap (ffap-bindings))
