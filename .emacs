@@ -835,3 +835,6 @@
     (set-visited-file-modtime (visited-file-modtime))
     (set-buffer-modified-p nil)))
 (setq revert-buffer-function 'revert-buffer-keep-undo)
+
+;eval $(cat $(ls -atr ~/.dbus/session-bus/* | tail -1) | grep -v ^# | sed -e 's/^/export /' ) && EMACS_LOAD_LIBS=1 TERM=xterm-256-color GDK_RGBA=0 emacs -nw
+;(dbus-init-bus :session)
