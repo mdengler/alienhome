@@ -287,8 +287,6 @@
 
 (with-library blank-mode ())
 
-(with-library dev-p4 ())
-
 (with-library w3m ())
 (with-library w3m-session ())
 (with-library w3m-cookie ())
