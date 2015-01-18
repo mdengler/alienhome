@@ -82,7 +82,7 @@ export PS1='\[\033[1;34m\](\A) \W \$ \[\033[m\]'
 
 # Auto-tmux invocation. From screen instructions at
 # http://taint.org/wk/RemoteLoginAutoScreen
-if [ "$TERM" != "dumb" -a "$TERM" != "cygwin" -a "$PS1" != "" -a "${STARTED_SCREEN:-x}" = x -a -z "$TMUX" ]
+if [ "$TERM" != "dumb" -a "$TERM" != "cygwin" -a "$PS1" != "" -a "${STARTED_SCREEN:-x}" = x -a -z "$TMUX" -a -x ~/bin/tmx -a -n "$(type -p tmux)" ]
 then
   STARTED_SCREEN=1 ; export STARTED_SCREEN
   TERM=xterm-256color ~/bin/tmx ${HOSTNAME:-$(hostname)} || echo "tmux finished. continuing with normal bash startup"
