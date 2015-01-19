@@ -232,9 +232,6 @@
         (delete-other-windows) ))))
 
 
-(global-hl-line-mode 1)
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Library loading
