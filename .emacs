@@ -99,7 +99,7 @@
  '(speedbar-use-images nil)
  '(speedbar-verbosity-level 2)
  '(tab-width 4)
- '(text-mode-hook (quote (turn-on-auto-fill text-mode-hook-identify)))
+ '(text-mode-hook (quote (turn-on-auto-fill text-mode-hook-identify flyspell-mode)))
  '(tool-bar-mode nil)
  '(transient-mark-mode t)
  '(truncate-lines nil)
