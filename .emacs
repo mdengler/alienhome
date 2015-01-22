@@ -83,7 +83,7 @@
  '(save-place-skip-check-regexp "\\`/\\(?:cdrom\\|floppy\\|mnt\\|\\(?:[^@/:]*@\\)?[^@/:]*[^@/:.]:\\)")
  '(scroll-bar-mode nil)
  '(send-mail-function (quote smtpmail-send-it))
- '(sendmail-program (expand-file-name "~/bin/msmtpQ"))
+ '(sendmail-program (expand-file-name "~/bin/msmtpq"))
  '(shell-completion-fignore (quote ("~" "#" "%")))
  '(shell-mode-hook (quote (ansi-color-for-comint-mode-on)))
  '(show-paren-mode t nil (paren))
