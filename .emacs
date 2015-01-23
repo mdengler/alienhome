@@ -65,7 +65,7 @@
  '(message-mode-hook (quote (flyspell-mode mail-abbrevs-setup)))
  '(message-send-mail-function (quote message-send-mail-with-sendmail))
  '(message-sendmail-envelope-from (quote header))
- '(message-sendmail-f-is-evil nil)
+ '(message-sendmail-f-is-evil t)
  '(message-user-fqdn "martindengler.com")
  '(next-line-add-newlines nil)
  '(p4-verbose nil)
