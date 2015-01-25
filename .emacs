@@ -56,6 +56,7 @@
  '(lpr-switches (quote ("-o media=a4" "-l")))
  '(mail-envelope-from (quote header))
  '(mail-mode-hook (quote (flyspell-mode mail-abbrevs-setup)))
+ '(mail-self-blind t)
  '(mail-specify-envelope-from t)
  '(menu-bar-mode nil)
  '(message-mode-hook (quote (flyspell-mode mail-abbrevs-setup)))
