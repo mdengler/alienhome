@@ -31,6 +31,7 @@
  '(font-lock-use-fonts nil)
  '(global-auto-revert-mode t)
  '(global-font-lock-mode t nil (font-lock))
+ '(global-hl-line-mode t)
  '(global-linum-mode nil)
  '(gnus-carpal nil t)
  '(gnus-expert-user t)
