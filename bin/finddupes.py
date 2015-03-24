@@ -120,16 +120,18 @@ def report_dupes(dupes,
                  outfh=None,
                  only_filenames=False,
                  exclude_earliest=False,
+                 exclude_latest=False,
                  exclude_shallowest=False,
                  null_delimiters=False,
                  show_dedupe=False):
 
-    if exclude_earliest and exclude_shallowest:
-        msg = "both exclude_earliest (--exclude-earliest) and" \
-              " exclude_shallowest (--exclude_shallowest) cannot be True"
+    if len(filter(None, [exclude_earliest, exclude_latest, exclude_shallowest])) > 1:
+        msg = "only one of exclude_earliest (--exclude-earliest), " \
+              " exclude_latest (--exclude-latest) and" \
+              " exclude_shallowest (--exclude_shallowest) can be True"
         raise ValueError(msg)
 
-    if show_dedupe and (not any((exclude_earliest, exclude_shallowest))):
+    if show_dedupe and (not any((exclude_earliest, exclude_latest, exclude_shallowest))):
         msg = "one of exclude_earliest (--exclude-earliest) or" \
               " exclude_shallowest (--exclude-shallowest) must be True " \
               " when show_dedupe (--show-dedupe) is True"
@@ -163,6 +165,10 @@ def report_dupes(dupes,
             sorted_fnames = sorted(fnames, _by_lastmod_time_by_name_rev)
             original = sorted_fnames.pop(0)
 
+        elif exclude_latest:
+            sorted_fnames = sorted(fnames, _by_lastmod_time_by_name_rev)
+            original = sorted_fnames.pop()
+
         else:
             sorted_fnames = sorted(fnames, _by_lastmod_time_by_name_rev)
 
@@ -170,7 +176,13 @@ def report_dupes(dupes,
 
         for fname in sorted_fnames:
             if show_dedupe:
-                outfh.write("rm '%s' && ln '%s' '%s'%s" % (fname, original, fname, delimiter))
+                outfh.write("[ -f '{original}' -a -r '{original}' ]"
+                            " && rm '{fname}' "
+                            " && ln '{original}' '{fname}'"
+                            "{deliminter}".format({
+                                "original": original,
+                                "fname": fname,
+                                "delimiter": delimiter}))
             elif only_filenames:
                 outfh.write("%s%s" % (fname, delimiter))
             else:
@@ -298,6 +310,13 @@ if __name__ == "__main__":
                       " (it will not be printed).  Useful with"
                       " --only-filenames (e.g., to find list of later dupes"
                       " to delete)")
+    parser.add_option("-L", "--exclude-latest-dupe",
+                      action="store_true",
+                      help="when reporting dupes, skip latest"
+                      " (it will not be printed).  Useful with"
+                      " --only-filenames (e.g., to find list of earlier dupes"
+                      " to delete) and --show-dedupe (e.g., to show commands"
+                      " to remove earlier dupes)")
     parser.add_option("-X", "--exclude-shallowest-dupe",
                       action="store_true",
                       help="when reporting dupes, skip shallowest"
@@ -335,6 +354,7 @@ if __name__ == "__main__":
         report_dupes(dupes,
                      only_filenames=options.only_filenames,
                      exclude_earliest=options.exclude_earliest_dupe,
+                     exclude_latest=options.exclude_latest_dupe,
                      exclude_shallowest=options.exclude_shallowest_dupe,
                      null_delimiters=options.null,
                      show_dedupe=options.show_dedupe)
