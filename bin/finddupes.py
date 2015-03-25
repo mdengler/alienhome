@@ -179,7 +179,7 @@ def report_dupes(dupes,
                 outfh.write("[ -f '{original}' -a -r '{original}' ]"
                             " && rm '{fname}' "
                             " && ln '{original}' '{fname}'"
-                            "{deliminter}".format({
+                            "{delimiter}".format(**{
                                 "original": original,
                                 "fname": fname,
                                 "delimiter": delimiter}))
