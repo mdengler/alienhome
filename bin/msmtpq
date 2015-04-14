@@ -180,8 +180,7 @@ connect_test() {
       log "msmtpq : can't find nm-online executable "     # if not found - complain
     'nm-online' -xq || ping -qnc1 -w4 debian.org >/dev/null 2>&1 || return 1
 
-  elif [ -z "$EMAIL_CONN_TEST" ] || \
-     [ "$EMAIL_CONN_TEST" = 'nm' ] ; then                      # use NetworkManager (nm-online) test
+  elif [ "$EMAIL_CONN_TEST" = 'nm' ] ; then                    # use NetworkManager (nm-online) test
     # must, of course, have nm-online installed
     which nm-online >/dev/null 2>&1 || \
       log -e 1 "msmtpq : can't find nm-online executable "     # if not found - complain ; quit
