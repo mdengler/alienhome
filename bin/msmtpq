@@ -33,15 +33,15 @@
 
 ## msmtpq now uses the following environment variables :
 ##   EMAIL_CONN_NOTEST   if set will suppress any testing for a connection
-##   EMAIL_CONN_TEST     if unset or =nm-p will try =nm and then =p (see below)
+##   EMAIL_CONN_TEST     if =nm-p will try =nm and then =p (see below)
 ##                       if =nm will use NetworkManager (nm-online) to test for a connection
-##                       if =p will use a ping test (debian.org) for a connection
+##                       if unset or =p will use a ping test (debian.org) for a connection
 ##                       if =P will use a fast ping test (8.8.8.8) for a connection
 ##                       if =n will use netcat (nc) to test for a connection
 ##                       if =s will use bash sockets to test for a connection
 ##   EMAIL_QUEUE_QUIET   if set will cause suppression of messages and 'chatter'
 
-EMAIL_CONN_TEST=  # see default above / in connect_test() function
+EMAIL_CONN_TEST=p  # see default above / in connect_test() function
 
 ## two essential patches by Philipp Hartwig
 ## 19 Oct 2011 & 27 Oct 2011
@@ -174,8 +174,7 @@ lock_queue() {        # <-- '-u' to remove lockfile
 ## test whether system is connected
 ## returns t/f (0/1)
 connect_test() {
-  if [ -z "$EMAIL_CONN_TEST" ] || \
-     [ "$EMAIL_CONN_TEST" = 'nm-p' ] ; then                    # use NetworkManager (nm-online) test plus ping fallback (default)
+  if [ "$EMAIL_CONN_TEST" = 'nm-p' ] ; then                    # use NetworkManager (nm-online) test plus ping fallback
     which nm-online >/dev/null 2>&1 || \
       log "msmtpq : can't find nm-online executable "     # if not found - complain
     'nm-online' -xq || ping -qnc1 -w4 debian.org >/dev/null 2>&1 || return 1
@@ -185,7 +184,8 @@ connect_test() {
     which nm-online >/dev/null 2>&1 || \
       log -e 1 "msmtpq : can't find nm-online executable "     # if not found - complain ; quit
     'nm-online' -xq || return 1
-  elif [ "$EMAIL_CONN_TEST" = 'p' ] ; then                     # use ping test
+  elif [ -z "$EMAIL_CONN_TEST" ] || \
+     [ "$EMAIL_CONN_TEST" = 'p' ] ; then                       # use ping test (default)
     # verify net connection - ping ip address of debian.org
     # would ping -qnc2 -w4 be better ?
     # would ping -qnc1 -w10 or -w20 be better ?
