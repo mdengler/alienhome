@@ -549,14 +549,14 @@ class gcalcli:
 
         self._GetCached()
 
-        for cal in self.allCals:
-            if len(calNames):
+        if calNames:
+            for cal in self.allCals:
                 for i in xrange(len(calNames)):
                     if re.search(calNames[i].lower(), cal['summary'].lower()):
                         self.cals.append(cal)
                         cal['colorSpec'] = calNameColors[i]
-            else:
-                self.cals = self.allCals
+        else:
+            self.cals = self.allCals
 
     @staticmethod
     def _LocalizeDateTime(dt):
@@ -1712,17 +1712,17 @@ class gcalcli:
         self._GraphEvents(cmd, start, count, eventList)
 
 
-    def QuickAddEvent(self, eventText, reminder=None, description=None):
+    def QuickAddEvent(self, eventText, reminder=None, description=None, calendar=None):
 
         if eventText == '':
             return
 
-        if len(self.cals) != 1:
-            PrintErrMsg("Must specify a single calendar\n")
-            return
+        if calendar is None:
+            calendar = self.cals[0]
+            PrintMsg("defaulting to calendar {!r}".format(calendar))
 
         newEvent = self._CalService().events().\
-                   quickAdd(calendarId = self.cals[0]['id'],
+                   quickAdd(calendarId = calendar['id'],
                             text = eventText).execute()
 
         if reminder:
@@ -1732,7 +1732,7 @@ class gcalcli:
                                                  'method'  : 'popup'}]}
 
             newEvent = self._CalService().events().\
-                       patch(calendarId = self.cals[0]['id'],
+                       patch(calendarId = calendar['id'],
                              eventId = newEvent['id'],
                              body = rem).execute()
 
@@ -1741,7 +1741,7 @@ class gcalcli:
             desc['description'] = unicode(description, locale.getpreferredencoding() or "UTF-8")
 
             newEvent = self._CalService().events().\
-                       patch(calendarId = self.cals[0]['id'],
+                       patch(calendarId = calendar['id'],
                              eventId = newEvent['id'],
                              body = desc).execute()
 
@@ -2292,6 +2292,7 @@ gflags.DEFINE_string("client_secret", __API_CLIENT_SECRET__, "API client_secret"
 gflags.DEFINE_string("configFolder", None, "Optional directory to load/store all configuration information")
 gflags.DEFINE_bool("includeRc", False, "Whether to include ~/.gcalclirc when using configFolder")
 gflags.DEFINE_multistring("calendar", [], "Which calendars to use")
+gflags.DEFINE_string("calendar_default", [], "Which calendar to use by default")
 gflags.DEFINE_multistring("calendar_color", [], "Colors for calendars (same format as --calendar, but only affects colorisations, not list of which calendars to apply action(s) to -- e.g., 'quick' requires just one calendar but you might have more than one --calendar-color set in .gcalclitrc")
 gflags.DEFINE_bool("military", False, "Use 24 hour display")
 
