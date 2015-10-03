@@ -1719,7 +1719,7 @@ class gcalcli:
 
         if calendar is None:
             calendar = self.cals[0]
-            PrintMsg("defaulting to calendar {!r}".format(calendar))
+            PrintMsg(CLR_NRM(), "defaulting to calendar {!r}".format(calendar))
 
         newEvent = self._CalService().events().\
                    quickAdd(calendarId = calendar['id'],
