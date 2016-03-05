@@ -35,6 +35,10 @@ if aboutidx == -1 and toidx == -1:
 parts_split = min(filter(None, (aboutidx, toidx))) # FUTURE: a bit too fragile
 
 at_parts = args[:parts_split]
+at_parts = " ".join(at_parts).strip().split()
+if at_parts[0] == "in":
+   at_parts[0] = "now"
+   at_parts.insert(1, "+")
 at_cmd = "at %s" % (" ".join(at_parts))
 
 my_uid = os.geteuid()
