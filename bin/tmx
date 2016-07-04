@@ -61,8 +61,8 @@ if [[ "$tmux_nb" == "0" ]]; then
     # to it.  If .tmux.conf has no new-session command in it, our
     # explicit 'new-session' creates it, and we attach happily, again,
     # to it.
-    tmux new-session -d -s $base_session
-    tmux attach         -t $base_session
+    tmux -u new-session -d -s $base_session
+    tmux -u attach         -t $base_session
 
 else
     # Make sure we are not already in a tmux session
@@ -87,9 +87,9 @@ else
 
         # Create a new session (without attaching it) and link to base session
         # to share windows
-        tmux new-session -d -t $base_session -s $session_id
+        tmux -u new-session -d -t $base_session -s $session_id
         # Attach to the new session
-        tmux attach-session -t $session_id
+        tmux -u attach-session -t $session_id
         # When we detach from it, kill the session
         tmux kill-session -t $session_id
     fi
