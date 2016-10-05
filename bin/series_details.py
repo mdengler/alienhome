@@ -40,6 +40,12 @@ def covariance(X, Y):
     return mean(exp_inner)
 
 
+def correlation(X, Y):
+    sigma_x = standard_deviation(X)
+    sigma_y = standard_deviation(Y)
+    return covariance(X, Y) / (sigma_x * sigma_y)
+
+
 def first_float(line):
     try:
         return float(line)
