@@ -53,6 +53,10 @@ def ssmd():
     return beta
 
 
+def dsmd(X, Y):
+    """See http://www.statistics.gov.hk/wsc/STS094-P3-S.pdf"""
+    return r_squared
+
 
 def first_float(line):
     try:
