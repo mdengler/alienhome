@@ -45,6 +45,14 @@ def correlation(X, Y):
     sigma_y = standard_deviation(Y)
     return covariance(X, Y) / (sigma_x * sigma_y)
 
+def ssmd():
+    
+    beta = (mu1 - mu2) / math.sqrt((sigma1 * sigma1)
+                                   + (sigma1 * sigma1)
+                                   - (2 * sigma12))
+    return beta
+
+
 
 def first_float(line):
     try:
