@@ -46,7 +46,7 @@ def correlation(X, Y):
     return covariance(X, Y) / (sigma_x * sigma_y)
 
 def ssmd():
-    
+    """See http://www.statistics.gov.hk/wsc/STS094-P3-S.pdf"""
     beta = (mu1 - mu2) / math.sqrt((sigma1 * sigma1)
                                    + (sigma1 * sigma1)
                                    - (2 * sigma12))
