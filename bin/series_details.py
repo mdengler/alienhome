@@ -32,6 +32,14 @@ def sample_standard_deviation(samples, bias_correct=True):
     variance = sum(deviations) / float(len(samples) - (1 if bias_correct else 0))
     return math.sqrt(variance), variance
 
+
+def covariance(X, Y):
+    mu_x = X.mean()
+    mu_y = Y.mean()
+    exp_inner = [((xi - mu_x) * (yi - mu_y)) for xi, yi in zip(X, Y)]
+    return mean(exp_inner)
+
+
 def first_float(line):
     try:
         return float(line)
