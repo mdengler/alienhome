@@ -16,13 +16,13 @@ def median(values):
     return sorted(counts.keys(),
                   lambda a, b: cmp(counts[b], counts[a]))[0]
 
-def sample_standard_deviation(samples):
+def sample_standard_deviation(samples, bias_correct=True):
     """See http://mathworld.wolfram.com/StandardDeviation.html"""
     x_bar = mean(samples)
     deviations = []
     for xi in samples:
         deviations.append((xi - x_bar)**2)
-    variance = sum(deviations) / float(len(samples) - 1)
+    variance = sum(deviations) / float(len(samples) - (1 if bias_correct else 0))
     return math.sqrt(variance), variance
 
 def first_float(line):
