@@ -16,6 +16,13 @@ def median(values):
     return sorted(counts.keys(),
                   lambda a, b: cmp(counts[b], counts[a]))[0]
 
+
+def standard_deviation(samples):
+    """See http://mathworld.wolfram.com/StandardDeviation.html"""
+    return sample_standard_deviation(samples, bias_correct=False)[0]
+std = standard_deviation
+
+
 def sample_standard_deviation(samples, bias_correct=True):
     """See http://mathworld.wolfram.com/StandardDeviation.html"""
     x_bar = mean(samples)
