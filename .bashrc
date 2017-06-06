@@ -76,7 +76,7 @@ export EDITOR=~/bin/editor
 
 export PYTHONSTARTUP=~/.pythonrc
 
-export PS1='\[\033[1;34m\](\A) \W \$ \[\033[m\]'
+export PS1='\[\033[1;34m\]\D{%Y%m%d-%H:%M.%S}\[\033[0m\] \[\033[1;34m\]\u\[\033[1;37m\]@\[\033[1;33m\]\h\[\033[1;36m\] \[\033[1;31m\]\W\[\033[m\] \$ \[\033[m\]'
 
 
 # Auto-tmux invocation. From screen instructions at
@@ -87,4 +87,3 @@ then
   TERM=xterm-256color ~/bin/tmx ${HOSTNAME:-$(hostname)} || echo "tmux finished. continuing with normal bash startup"
 fi
 # [end of auto-screen snippet]
-
