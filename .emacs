@@ -354,6 +354,10 @@
 
 (with-library htmlize ())
 
+(with-library iswitchb
+  (global-set-key "\C-xb" 'iswitchb-buffer))
+
+
 (with-library linum ())
 
 (with-library mu4e
@@ -758,8 +762,6 @@
 
 (global-set-key "\C-x\C-g" 'w3m-search)
 (global-set-key "\C-x\C-u" 'w3m-browse-url)
-
-(global-set-key "\C-xb" 'iswitchb-buffer)
 
 (global-set-key "\M-%" 'query-replace-regexp)
 
