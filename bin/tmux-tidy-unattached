@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+HOSTNAME=$(hostname)
+for s in $(tmux ls | grep -v attached | cut -d, -f 1 | grep -v "$HOSTNAME") ; do
+    tmux kill-session -t $s,$HOSTNAME
+done
