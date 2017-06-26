@@ -14,7 +14,14 @@ export HISTFILESIZE=1000000000
 # from http://www.ukuug.org/events/linux2003/papers/bash_tips/
 # and http://superuser.com/a/734410/250287
 shopt -s histappend
-export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
+# value from /etc/bashrc on Fedora 25
+#export PROMPT_COMMAND='printf "\033k%s@%s:%s\033\\" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/\~}"'
+# ...this preserves the PROMPT_COMMAND...
+#export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
+# ...but we don't want that:
+export PROMPT_COMMAND="history -a; history -c; history -r"
+# this will change it to 'PROMPT_HERE':
+# printf '\ekPROMPT_HERE\e\\'
 export IGNOREEOF=1
 
 export PATH=$HOME/.local/bin:$PATH
@@ -34,8 +41,10 @@ alias psc='ps xawf -eo pid,user,cgroup,args'
 #   http://volnitsky.com/project/git-prompt
 alias ga='git add'
 alias gd='git diff --stat'
-alias gl='git log --oneline --graph --date-order --decorate --pretty=format:"%Creset %C(bold black)%h %C(reset)%C(cyan)%x1b[s%an%x1b[u%x1b[8C%Creset%C(bold white) %s %Cgreen(%ar)%C(yellow)%d %C(red)%ad" --branches'
-alias glh='gl | head -28'
+alias gl='git log --oneline --graph --date-order --decorate --pretty=format:"%Creset %Cgreen%h %Creset %s %Cblueby %an (%ar) %C(yellow) %d %Cred %ad" --branches'
+alias ggg=gl
+alias gg='gl | head -50'
+alias g='gl | head -10'
 alias gm='git commit -m'
 alias gs='git status'
 
@@ -65,6 +74,29 @@ ssh-reagent () {
        echo Cannot find ssh agent - maybe you should reconnect and forward it?
 }
 
+# from https://eklitzke.org/using-ssh-agent-and-ed25519-keys-on-gnome
+# from https://ask.fedoraproject.org/en/question/92448/how-do-i-get-proper-ssh-agent-functionality-in-gnome/
+# mkdir -p ~/.config/systemd/user
+# cat > ~/.config/systemd/user/ssh-agent.service <<EOF
+# [Unit]
+# Description=OpenSSH private key agent
+# IgnoreOnIsolate=true
+# 
+# [Service]
+# Type=forking
+# Environment=SSH_AUTH_SOCK=%t/ssh-agent.socket
+# ExecStart=/usr/bin/ssh-agent -a $SSH_AUTH_SOCK
+# #ExecStartPost=/usr/bin/systemctl --user set-environment SSH_AUTH_SOCK=${SSH_AUTH_SOCK}
+# ExecStartPost=/usr/bin/systemctl --user set-environment SSH_AUTH_SOCK=${SSH_AUTH_SOCK} GSM_SKIP_SSH_AGENT_WORKAROUND="true"
+# 
+# [Install]
+# WantedBy=default.target
+# 
+# EOF
+# systemctl --user enable ssh-agent.service
+#
+# Probably don't need this, but may need to add this to .bashrc just in case:
+# systemctl --user import-environment SSH_AUTH_SOCK
 
 if [ -e .bashrc.d/`hostname` ] ; then
   . .bashrc.d/`hostname`
@@ -75,9 +107,10 @@ fi
 export EDITOR=~/bin/editor
 
 export PYTHONSTARTUP=~/.pythonrc
+export PYTHONIOENCODING=utf-8
 
+export PS1='\[\033[1;34m\](\A) \W \$ \[\033[m\]'
 export PS1='\[\033[1;34m\]\D{%Y%m%d-%H:%M.%S}\[\033[0m\] \[\033[1;34m\]\u\[\033[1;37m\]@\[\033[1;33m\]\h\[\033[1;36m\] \[\033[1;31m\]\W\[\033[m\] \$ \[\033[m\]'
-
 
 # Auto-tmux invocation. From screen instructions at
 # http://taint.org/wk/RemoteLoginAutoScreen
