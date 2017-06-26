@@ -6,12 +6,43 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(TeX-PDF-mode t)
- '(TeX-output-view-style (quote (("^dvi$" ("^landscape$" "^pstricks$\\|^pst-\\|^psfrag$") "%(o?)dvips -t landscape %d -o && gv %f") ("^dvi$" "^pstricks$\\|^pst-\\|^psfrag$" "%(o?)dvips %d -o && gv %f") ("^dvi$" ("^a4\\(?:dutch\\|paper\\|wide\\)\\|sem-a4$" "^landscape$") "%(o?)xdvi %dS -paper a4r -s 0 %d") ("^dvi$" "^a4\\(?:dutch\\|paper\\|wide\\)\\|sem-a4$" "%(o?)xdvi %dS -paper a4 %d") ("^dvi$" ("^a5\\(?:comb\\|paper\\)$" "^landscape$") "%(o?)xdvi %dS -paper a5r -s 0 %d") ("^dvi$" "^a5\\(?:comb\\|paper\\)$" "%(o?)xdvi %dS -paper a5 %d") ("^dvi$" "^b5paper$" "%(o?)xdvi %dS -paper b5 %d") ("^dvi$" "^letterpaper$" "%(o?)xdvi %dS -paper us %d") ("^dvi$" "^legalpaper$" "%(o?)xdvi %dS -paper legal %d") ("^dvi$" "^executivepaper$" "%(o?)xdvi %dS -paper 7.25x10.5in %d") ("^dvi$" "." "%(o?)xdvi %dS %d") ("^pdf$" "" "evince %o") ("^pdf$" "." "xpdf -remote %s -raise %o %(outpage)") ("^html?$" "." "netscape %o"))))
- '(auto-coding-alist (quote (("\\.\\(arc\\|zip\\|lzh\\|lha\\|zoo\\|[jew]ar\\|xpi\\|rar\\|7z\\|ARC\\|ZIP\\|LZH\\|LHA\\|ZOO\\|[JEW]AR\\|XPI\\|RAR\\|7Z\\)\\'" . no-conversion-multibyte) ("\\.\\(exe\\|EXE\\)\\'" . no-conversion) ("\\.\\(sx[dmicw]\\|odt\\|tar\\|t[bg]z\\)\\'" . no-conversion) ("\\.\\(gz\\|Z\\|bz\\|bz2\\|xz\\|gpg\\)\\'" . no-conversion) ("\\.\\(jpe?g\\|png\\|gif\\|tiff?\\|p[bpgn]m\\)\\'" . no-conversion) ("\\.pdf\\'" . no-conversion) ("/#[^/]+#\\'" . emacs-mule) ("tasksched-.*\\.xml\\'" . utf-16le-with-signature-dos))))
+ '(TeX-output-view-style
+   (quote
+    (("^dvi$"
+      ("^landscape$" "^pstricks$\\|^pst-\\|^psfrag$")
+      "%(o?)dvips -t landscape %d -o && gv %f")
+     ("^dvi$" "^pstricks$\\|^pst-\\|^psfrag$" "%(o?)dvips %d -o && gv %f")
+     ("^dvi$"
+      ("^a4\\(?:dutch\\|paper\\|wide\\)\\|sem-a4$" "^landscape$")
+      "%(o?)xdvi %dS -paper a4r -s 0 %d")
+     ("^dvi$" "^a4\\(?:dutch\\|paper\\|wide\\)\\|sem-a4$" "%(o?)xdvi %dS -paper a4 %d")
+     ("^dvi$"
+      ("^a5\\(?:comb\\|paper\\)$" "^landscape$")
+      "%(o?)xdvi %dS -paper a5r -s 0 %d")
+     ("^dvi$" "^a5\\(?:comb\\|paper\\)$" "%(o?)xdvi %dS -paper a5 %d")
+     ("^dvi$" "^b5paper$" "%(o?)xdvi %dS -paper b5 %d")
+     ("^dvi$" "^letterpaper$" "%(o?)xdvi %dS -paper us %d")
+     ("^dvi$" "^legalpaper$" "%(o?)xdvi %dS -paper legal %d")
+     ("^dvi$" "^executivepaper$" "%(o?)xdvi %dS -paper 7.25x10.5in %d")
+     ("^dvi$" "." "%(o?)xdvi %dS %d")
+     ("^pdf$" "" "evince %o")
+     ("^pdf$" "." "xpdf -remote %s -raise %o %(outpage)")
+     ("^html?$" "." "netscape %o"))))
+ '(auto-coding-alist
+   (quote
+    (("\\.\\(arc\\|zip\\|lzh\\|lha\\|zoo\\|[jew]ar\\|xpi\\|rar\\|7z\\|ARC\\|ZIP\\|LZH\\|LHA\\|ZOO\\|[JEW]AR\\|XPI\\|RAR\\|7Z\\)\\'" . no-conversion-multibyte)
+     ("\\.\\(exe\\|EXE\\)\\'" . no-conversion)
+     ("\\.\\(sx[dmicw]\\|odt\\|tar\\|t[bg]z\\)\\'" . no-conversion)
+     ("\\.\\(gz\\|Z\\|bz\\|bz2\\|xz\\|gpg\\)\\'" . no-conversion)
+     ("\\.\\(jpe?g\\|png\\|gif\\|tiff?\\|p[bpgn]m\\)\\'" . no-conversion)
+     ("\\.pdf\\'" . no-conversion)
+     ("/#[^/]+#\\'" . emacs-mule)
+     ("tasksched-.*\\.xml\\'" . utf-16le-with-signature-dos))))
  '(auto-compression-mode t nil (jka-compr))
  '(blank-chars (quote tabs))
  '(blank-display-mappings nil)
  '(blink-cursor-mode nil)
+ '(c-default-style (quote ((awk-mode . "awk") (other . "gnu"))))
  '(calculator-bind-escape nil)
  '(case-fold-search t)
  '(cider-prefer-local-resources t)
@@ -19,9 +50,15 @@
  '(cider-repl-history-size 50000)
  '(column-number-mode t)
  '(current-language-environment "UTF-8")
+ '(custom-enabled-themes (quote (tango-dark)))
+ '(custom-safe-themes
+   (quote
+    ("ed317c0a3387be628a48c4bbdb316b4fa645a414838149069210b66dd521733f" "ecb9fe1d5b165a35499191a909b2b5710a52935614058b327a39bfbbb07c7dc8" "8abee8a14e028101f90a2d314f1b03bed1cde7fd3f1eb945ada6ffc15b1d7d65" "5999e12c8070b9090a2a1bbcd02ec28906e150bb2cdce5ace4f965c76cf30476" "868f73b5cf78e72ca2402e1d48675e49cc9a9619c5544af7bf216515d22b58e7" "1e4b0eec2a963c0edc06302e3e6d1fcd17a3056dd450deb26dc5d01377160f2e" "4c9ba94db23a0a3dea88ee80f41d9478c151b07cb6640b33bfc38be7c2415cc4" "1db337246ebc9c083be0d728f8d20913a0f46edc0a00277746ba411c149d7fe5" "bcc6775934c9adf5f3bd1f428326ce0dcd34d743a92df48c128e6438b815b44f" "67e998c3c23fe24ed0fb92b9de75011b92f35d3e89344157ae0d544d50a63a72" default)))
  '(default-input-method "rfc1345")
  '(delete-selection-mode t)
- '(describe-char-unidata-list (quote (name old-name general-category decomposition iso-10646-comment)))
+ '(describe-char-unidata-list
+   (quote
+    (name old-name general-category decomposition iso-10646-comment)))
  '(display-time-day-and-date t)
  '(display-time-mode t)
  '(epa-file-cache-passphrase-for-symmetric-encryption t)
@@ -42,8 +79,10 @@
  '(gnus-inhibit-startup-message t)
  '(gnus-nntp-server nil)
  '(gnus-novice-user nil)
- '(gnus-treat-display-xface (quote head))
- '(gnus-visual (quote (summary-highlight group-highlight article-highlight mouse-face summary-menu group-menu article-menu tree-highlight menu highlight browse-menu server-menu page-marker tree-menu binary-menu pick-menu grouplens-menu)))
+ '(gnus-treat-display-xface (quote head) t)
+ '(gnus-visual
+   (quote
+    (summary-highlight group-highlight article-highlight mouse-face summary-menu group-menu article-menu tree-highlight menu highlight browse-menu server-menu page-marker tree-menu binary-menu pick-menu grouplens-menu)))
  '(graphviz-dot-preview-extension "png")
  '(graphviz-dot-view-command "dotty %s")
  '(highlight-symbol-idle-delay 0)
@@ -70,17 +109,33 @@
  '(message-sendmail-envelope-from (quote header))
  '(message-sendmail-f-is-evil t)
  '(message-user-fqdn "martindengler.com")
+ '(mode-line-format nil)
  '(next-line-add-newlines nil)
+ '(nrepl-message-colors
+   (quote
+    ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
+ '(package-selected-packages
+   (quote
+    (git-gutter+ ample-theme mu4e-maildirs-extension hippie-exp-ext highlight-symbol edit-server tango-2 tango-plus-theme tango-2-theme tangotango-theme anti-zenburn-theme simplezen zerodark-theme nzenburn-theme hc-zenburn-theme ample-zen-theme zencoding-mode color-theme-tangotango color-theme-tango color-theme-library color-theme-zenburn zen-and-art-theme zen-mode zenburn-theme color-theme zenburn)))
  '(paren-mode (quote sexp) nil (paren))
+ '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838")))
  '(pr-ps-printer-alist (quote ((default "lpr" nil "-P" ""))))
  '(ps-paper-type (quote a4))
  '(ps-printer-name nil)
- '(rcirc-server-alist (quote (("irc.freenode.net" :channels ("#rcirc" "#bash" "#clojure" "#python") :encryption tls))))
+ '(rcirc-server-alist
+   (quote
+    (("irc.freenode.net" :channels
+      ("#rcirc" "#bash" "#clojure" "#python")
+      :encryption tls))))
  '(remember-mailbox "~/Maildir/todo")
  '(remote-shell-program "ssh")
- '(safe-local-variable-values (quote ((coding-system . utf-8) (rpm-change-log-uses-utc . t))))
- '(save-place t nil (saveplace))
- '(save-place-skip-check-regexp "\\`/\\(?:cdrom\\|floppy\\|mnt\\|\\(?:[^@/:]*@\\)?[^@/:]*[^@/:.]:\\)")
+ '(safe-local-variable-values
+   (quote
+    ((coding-system . utf-8)
+     (rpm-change-log-uses-utc . t))))
+ '(save-place-mode t nil (saveplace))
+ '(save-place-skip-check-regexp
+   "\\`/\\(?:cdrom\\|floppy\\|mnt\\|\\(?:[^@/:]*@\\)?[^@/:]*[^@/:.]:\\)")
  '(scroll-bar-mode nil)
  '(send-mail-function (quote smtpmail-send-it))
  '(sendmail-program (expand-file-name "~/bin/msmtpq"))
@@ -99,14 +154,41 @@
  '(speedbar-use-images nil)
  '(speedbar-verbosity-level 2)
  '(tab-width 4)
- '(text-mode-hook (quote (turn-on-auto-fill text-mode-hook-identify flyspell-mode)))
+ '(text-mode-hook
+   (quote
+    (turn-on-auto-fill text-mode-hook-identify flyspell-mode)))
  '(tool-bar-mode nil)
  '(transient-mark-mode t)
  '(truncate-lines nil)
  '(user-mail-address "martin@martindengler.com")
- ;'(url-proxy-services (quote (("no_proxy" . "^.*.example.com") ("no_proxy" . "^.*.example.net") ("http" . "proxyhost.example.net:8080") ("https" . "proxyhost.example.net:8443"))))
+ '(vc-annotate-background "#3b3b3b")
+ '(vc-annotate-color-map
+   (quote
+    ((20 . "#dd5542")
+     (40 . "#CC5542")
+     (60 . "#fb8512")
+     (80 . "#baba36")
+     (100 . "#bdbc61")
+     (120 . "#7d7c61")
+     (140 . "#6abd50")
+     (160 . "#6aaf50")
+     (180 . "#6aa350")
+     (200 . "#6a9550")
+     (220 . "#6a8550")
+     (240 . "#6a7550")
+     (260 . "#9b55c3")
+     (280 . "#6CA0A3")
+     (300 . "#528fd1")
+     (320 . "#5180b3")
+     (340 . "#6380b3")
+     (360 . "#DC8CC3"))))
+ '(vc-annotate-very-old-color "#DC8CC3" t)
  '(w3m-use-cookies t)
- '(winner-mode t nil (winner)))
+ '(winner-mode t nil (winner))
+ '(zen-encumbered-urls
+   (quote
+    ("#brief timewastes" "www.penny-arcade.com" "www.dilbert.com" "www.xkcd.com" "www.userfriendly.org" "#news waste" "slashdot.org" "dn.se" "#social timewastes" "https://www.facebook.com")))
+ '(zen-fullscreen-mode t))
 
 (put 'downcase-region 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
@@ -116,7 +198,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(blank-tab-face ((((class mono)) :inverse-video t) (t (:background "Red" :foreground "White"))))
+ '(blank-tab-face ((((class mono)) :inverse-video t) (t (:background "Red" :foreground "White"))) t)
  '(font-lock-doc-string-face ((((class color) (background light)) (:foreground "orange"))))
  '(font-lock-string-face ((((class color) (background light)) (:foreground "darkgreen"))))
  '(highlight-symbol-face ((t (:background "orange"))))
@@ -324,15 +406,22 @@
   (with-library cider
     (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode 'subword-mode 'smartparens-strict-mode)))
 
-(with-library color-theme
-  (with-library zenburn (color-theme-zenburn)))
+;; (with-library color-theme
+;;   (with-library zenburn (color-theme-zenburn))
+;;   (with-library tango-2 ())
+;;   (with-library tango-2-theme ())
+;;   (with-library tango-plus-theme ())
+;;   (with-library tango-tango-theme ())
+;;   (with-library zenburn-theme ())
+;;   (with-library zerodark-theme ())
+;;   )
 
 (with-library cosmetic ())
 
 ;; desktop mode lets us saves buffer state. activate it with M-x desktop-save RET.
 (with-library desktop (desktop-save-mode 1))
 
-(with-library dev-p4 ())
+;(with-library dev-p4 ())
 
 (with-library dircolors ())
 
