@@ -1,7 +1,14 @@
-neww -n bash      'exec bash'
-neww -n emacs     "env EMACS_LOAD_LIBS=1 TERM=xterm-256color emacs -nw"
-neww -n bash      'exec bash'
-neww -n bash      'exec bash'
+#having problems for a few months:
+#/home/martin/.tmux.conf:1: can't establish current session
+#/home/martin/.tmux.conf.standard-windows:7: usage: set-option [-agosquw] [-t ta]
+#/home/martin/.tmux.conf:84: no client available
 
-set -f status-utf8
+#new-session -s $HOSTNAME -n mutt      mutt
+new-window -k -t bash -n mutt     mutt
+new-window            -n emacs     "env EMACS_LOAD_LIBS=1 TERM=xterm-256color emacs -nw"
+new-window            -n bash      'exec bash'
+new-window            -n root      'sudo su -'
+new-window            -n bash      'exec bash'
+
+set -gq status-utf8
 setw alternate-screen off
