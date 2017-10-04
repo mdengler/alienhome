@@ -184,7 +184,12 @@ try:
     from apiclient.discovery import build
     from oauth2client.file import Storage
     from oauth2client.client import OAuth2WebServerFlow
-    from oauth2client.tools import run
+    try:
+        from oauth2client.tools import run
+        oauth2client_argparser = None
+    except:
+        from oauth2client.tools import run_flow as run
+        from oauth2client.tools import argparser as oauth2client_argparser
 except ImportError as e:
     print "ERROR: Missing module - %s" % e.args[0]
     sys.exit(1)
@@ -547,6 +552,7 @@ class gcalcli:
         self.client_id        = client_id
         self.client_secret    = client_secret
 
+
         self._GetCached()
 
         if calNames:
@@ -577,13 +583,24 @@ class gcalcli:
             credentials = storage.get()
 
             if credentials is None or credentials.invalid == True:
-                credentials = run(
-                    OAuth2WebServerFlow(
-                        client_id=self.client_id,
-                        client_secret=self.client_secret,
-                        scope='https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/urlshortener',
-                        user_agent=__program__+'/'+__version__),
-                    storage)
+                if oauth2client_argparser is not None:
+                    # newer API; see https://github.com/insanum/gcalcli/issues/244
+                    args, unknown = oauth2client_argparser.parse_known_args(sys.argv)
+                    credentials = run(
+                        OAuth2WebServerFlow(
+                            client_id=self.client_id,
+                            client_secret=self.client_secret,
+                            scope='https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/urlshortener',
+                            user_agent=__program__+'/'+__version__),
+                        storage, args)
+                else:
+                    credentials = run(
+                        OAuth2WebServerFlow(
+                            client_id=self.client_id,
+                            client_secret=self.client_secret,
+                            scope='https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/urlshortener',
+                            user_agent=__program__+'/'+__version__),
+                        storage)
 
             self.authHttp = credentials.authorize(httplib2.Http())
 
@@ -639,6 +656,7 @@ class gcalcli:
             except IOError:
                 pass
                 # fall through
+
 
         calList = self._CalService().calendarList().list().execute()
 
@@ -2380,7 +2398,7 @@ def BowChickaWowWow():
             tmpArgv = argv
         args = FLAGS(tmpArgv)
     except gflags.FlagsError, e:
-        PrintErrMsg(str(e))
+        PrintErrMsg("Problem: {}".format(e))
         Usage(True)
         sys.exit(1)
 
@@ -2406,6 +2424,7 @@ def BowChickaWowWow():
     if FLAGS.helpshort:
         Usage()
         sys.exit()
+
 
     if not FLAGS.color:
         CLR.useColor = False
@@ -2615,6 +2634,7 @@ def BowChickaWowWow():
             PrintErrMsg('Error: invalid event text\n')
             sys.exit(1)
 
+        PrintMsg(CLR_MAG(), "adding quick event")
         # allow unicode strings for input
         gcal.QuickAddEvent(unicode(args[1], locale.getlocale()[1] or "UTF-8"),
                            reminder=FLAGS.reminder, description=FLAGS.description)
