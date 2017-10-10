@@ -129,6 +129,8 @@ log() {
     shift 2                          # shift opt & its arg off
   fi
 
+  [ -n "$DBUS_SESSION_BUS_ADDRESS" ] && notify-send -t 40000 "${1:-msmtpq run}" "$*"
+
   [ -z "$EMAIL_QUEUE_QUIET" ] && dsp "$@"  # display msg to user, as well as logging it
 
   if [ -n "$LOG" ] ; then            # log is defined and in use
