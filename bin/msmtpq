@@ -129,7 +129,13 @@ log() {
     shift 2                          # shift opt & its arg off
   fi
 
-  [ -n "$DBUS_SESSION_BUS_ADDRESS" ] && notify-send -t 40000 "${1:-msmtpq run}" "$*"
+  NOTIFY_SEND_TIMEOUT=40000
+  NOTIFY_SEND_HINT=
+  if echo "$*" | grep -q "queue is empty (nothing to send)" ; then
+      NOTIFY_SEND_TIMEOUT=100
+      NOTIFY_SEND_HINT="--hint=int:transient:1"
+  fi
+  [ -n "$DBUS_SESSION_BUS_ADDRESS" ] && notify-send -t "$NOTIFY_SEND_TIMEOUT" "$NOTIFY_SEND_HINT" "${1:-msmtpq run}" "$*"
 
   [ -z "$EMAIL_QUEUE_QUIET" ] && dsp "$@"  # display msg to user, as well as logging it
 
