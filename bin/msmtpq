@@ -130,12 +130,13 @@ log() {
   fi
 
   NOTIFY_SEND_TIMEOUT=40000
-  NOTIFY_SEND_HINT=
   if echo "$*" | grep -q "queue is empty (nothing to send)" ; then
       NOTIFY_SEND_TIMEOUT=100
       NOTIFY_SEND_HINT="--hint=int:transient:1"
+      [ -n "$DBUS_SESSION_BUS_ADDRESS" ] && notify-send -t "$NOTIFY_SEND_TIMEOUT" "$NOTIFY_SEND_HINT" "${1:-msmtpq run}" "$*"
+  else
+      [ -n "$DBUS_SESSION_BUS_ADDRESS" ] && notify-send -t "$NOTIFY_SEND_TIMEOUT"                     "${1:-msmtpq run}" "$*"
   fi
-  [ -n "$DBUS_SESSION_BUS_ADDRESS" ] && notify-send -t "$NOTIFY_SEND_TIMEOUT" "$NOTIFY_SEND_HINT" "${1:-msmtpq run}" "$*"
 
   [ -z "$EMAIL_QUEUE_QUIET" ] && dsp "$@"  # display msg to user, as well as logging it
 
