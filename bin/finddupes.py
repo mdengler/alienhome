@@ -55,8 +55,7 @@ def hash_onedir((exclude_extensions, include_extensions),
 
 
 def finddupes(hashes, only_shallowest_dupes=False, exclude_extensions=None, include_extensions=None):
-    dupes = [h for h in hashes if len(hashes[h]) > 1]
-    dupes = dict([(h, hashes[h]) for h in dupes])
+    dupes = dict((h, v) for h, v in hashes.iteritems() if len(v) > 1)
 
     if only_shallowest_dupes:
         shallowest_dupes = {}
