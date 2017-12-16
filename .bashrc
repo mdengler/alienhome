@@ -43,8 +43,8 @@ alias ga='git add'
 alias gd='git diff --stat'
 alias gl='git log --oneline --graph --date-order --decorate --pretty=format:"%Creset %Cgreen%h %Creset %s %Cblueby %an (%ar) %C(yellow) %d %Cred %ad" --branches'
 alias ggg=gl
-alias gg='gl | head -50'
-alias g='gl | head -10'
+alias gg='gl --color=always | head -50'
+alias g='gl --color=always | head -10'
 alias gm='git commit -m'
 alias gs='git status'
 
@@ -73,6 +73,19 @@ ssh-reagent () {
        done
        echo Cannot find ssh agent - maybe you should reconnect and forward it?
 }
+
+
+# Set SSH to use gpg-agent  -- from https://wiki.archlinux.org/index.php/GnuPG#Unattended_passphrase
+# Set GPG TTY
+export GPG_TTY=$(tty)
+unset SSH_AGENT_PID
+if [ "${gnupg_SSH_AUTH_SOCK_by:-0}" -ne $$ ]; then
+    export SSH_AUTH_SOCK="/run/user/$UID/gnupg/S.gpg-agent.ssh"
+else
+    # Refresh gpg-agent tty in case user switches into an X session
+    gpg-connect-agent updatestartuptty /bye >/dev/null
+fi
+
 
 # from https://eklitzke.org/using-ssh-agent-and-ed25519-keys-on-gnome
 # from https://ask.fedoraproject.org/en/question/92448/how-do-i-get-proper-ssh-agent-functionality-in-gnome/
@@ -110,7 +123,8 @@ export PYTHONSTARTUP=~/.pythonrc
 export PYTHONIOENCODING=utf-8
 
 export PS1='\[\033[1;34m\](\A) \W \$ \[\033[m\]'
-export PS1='\[\033[1;34m\]\D{%Y%m%d-%H:%M.%S}\[\033[0m\] \[\033[1;34m\]\u\[\033[1;37m\]@\[\033[1;33m\]\h\[\033[1;36m\] \[\033[1;31m\]\W\[\033[m\] \$ \[\033[m\]'
+export PS1='\[\033[1;34m\]\D{%Y%m%d-%H:%M.%S}\[\033[0m\] \[\033[1;34m\]\u\[\033[1;37m\]@\[\033[1;33m\]\h\[\033[1;36m\] \[\033[1;31m\]\W\[\033[m\] \[\033[1;34m\]▶\[\033[m\] \$ \[\033[m\]'
+
 
 # Auto-tmux invocation. From screen instructions at
 # http://taint.org/wk/RemoteLoginAutoScreen
