@@ -96,9 +96,9 @@ $ text2histo.py -w20 --raw < ~/src/stopwords.txt | cut -d, -f 1,3 | ~/bin/scatte
 
 """
 
+import functools
 import math
 import optparse
-import os
 import sys
 
 
@@ -112,7 +112,7 @@ def get_counts(lines):
 
         try:
             count = int(line)
-        except Exception, msg:
+        except Exception:
             count = len(line)
 
         if count not in counts:
@@ -134,7 +134,7 @@ def get_bin_contents(counts, bins=None):
         bins = int(bins)  # in case it's a string
 
     bin_range = (max_c - min_c) + 1
-    bin_increment = bin_range / math.ceil(float(bins))
+    bin_increment = bin_range // math.ceil(float(bins))
 
     bin_start = max_c
 
@@ -171,7 +171,7 @@ def print_histogram_bins(bin_contents, max_bar_width=None):
 
     width_normalizer = width / float(max([size for s, e, size in bin_contents]))
 
-    bin_start_and_ends = reduce(
+    bin_start_and_ends = functools.reduce(
         lambda a, b: a + b, [[s, e] for s, e, size in bin_contents], []
     )
     bin_label_padding = max(map(len, map(str, bin_start_and_ends))) + 1
@@ -209,6 +209,6 @@ if __name__ == "__main__":
 
     if options.raw:
         for bin_high, bin_low, bin_value in bin_contents:  # destructure for clarity
-            print ",".join(map(str, (bin_high, bin_low, bin_value)))
+            print(",".join(map(str, (bin_high, bin_low, bin_value))))
     else:
         print_histogram_bins(bin_contents, max_bar_width=options.max_bar_width)
