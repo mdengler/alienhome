@@ -12,16 +12,16 @@ from optparse import OptionParser
 # TODO: allow y axis to be non-numeric, as in graphing uniq -c output: tail ~/doc/public_html/proj/vp_001/files_by_commits.txt
 # TODO: understand dates as X axis
 
-#amusing glyphs:
+# amusing glyphs:
 # •‧⁖⁘⁙⁚₀₁₂₃₄₅₆₇₈₉∙∘∴∶∷⊕⊖⊗⊘⊙⊚⊛⊜⊝⋅⋆⋮⋯⋰⋱⍉⌾⍟─━┄┉┈┅╌╍◉○◌◍◎●◐◦◯☉★☆⚪⚫⚬✩✪✫✬✭✮✯✰✚✛✜✢✣✤✶✷✸✹✺✻✿❀❍⦁⨀⦾⦿⨁⨂〠㊀㊁㊂㊃㊄㊅㊆㊇㊈㊉﷽
 GLYPHS = {
-    1:  "‧",
-    2:  "•",
-    3:  "⦁",
-    4:  "●",
-    5:  "",
-    6:  "",
-    }
+    1: "‧",
+    2: "•",
+    3: "⦁",
+    4: "●",
+    5: "",
+    6: "",
+}
 
 
 def is_number(s):
@@ -91,7 +91,18 @@ def transform(points, rows, cols):
     return output_points, min_y, y_transform, min_x, x_transform
 
 
-def dump_points(output_fh, rows, cols, points, min_y, y_transform, min_x, x_transform, draw_bars=False, use_glyphs=True):
+def dump_points(
+    output_fh,
+    rows,
+    cols,
+    points,
+    min_y,
+    y_transform,
+    min_x,
+    x_transform,
+    draw_bars=False,
+    use_glyphs=True,
+):
     ys = points.keys()
     xs = list(itertools.chain([x.keys()[0] for x in points.values()]))
 
@@ -110,7 +121,7 @@ def dump_points(output_fh, rows, cols, points, min_y, y_transform, min_x, x_tran
         output_fh.write(axis_str)
 
         for x in range(cols + 1):
-            output_char = ' '
+            output_char = " "
             if y in points and x in points[y]:
                 output_char = str(points[y][x])
                 if use_glyphs:
@@ -123,7 +134,7 @@ def dump_points(output_fh, rows, cols, points, min_y, y_transform, min_x, x_tran
 
         output_fh.write(os.linesep)
 
-    output_fh.write('   +' + '-' * cols + os.linesep)
+    output_fh.write("   +" + "-" * cols + os.linesep)
 
     pointer_str = " "
     col_tick_maxlen = len(str(max_x)) + len(pointer_str) + 2
@@ -140,15 +151,21 @@ def dump_points(output_fh, rows, cols, points, min_y, y_transform, min_x, x_tran
 
 
 def ascii_scatter(output_fh, points, rows, cols, draw_bars=False, use_glyphs=False):
-    output_points, min_y, y_transform, min_x, x_transform = \
-        transform(points, rows, cols)
-    dump_points(output_fh,
-                rows, cols,
-                output_points,
-                min_y, y_transform,
-                min_x, x_transform,
-                draw_bars=draw_bars,
-                use_glyphs=use_glyphs)
+    output_points, min_y, y_transform, min_x, x_transform = transform(
+        points, rows, cols
+    )
+    dump_points(
+        output_fh,
+        rows,
+        cols,
+        output_points,
+        min_y,
+        y_transform,
+        min_x,
+        x_transform,
+        draw_bars=draw_bars,
+        use_glyphs=use_glyphs,
+    )
 
 
 def pylab_scatter(points, draw_bars=False):
@@ -157,6 +174,7 @@ def pylab_scatter(points, draw_bars=False):
     ys = points.keys()
     xs = list(itertools.chain([x.keys()[0] for x in points.values()]))
     import pylab
+
     pylab.scatter(xs, ys)
     pylab.show()
 
@@ -172,20 +190,29 @@ def parse_options():
 
     options, args = parser.parse_args()
 
-    return (options.rows,
-            options.cols,
-            sys.stdin,
-            sys.stdout,
-            options.bars,
-            options.use_pylab,
-            options.glyphs,
-            options.debug_dump_points,
-            )
-
+    return (
+        options.rows,
+        options.cols,
+        sys.stdin,
+        sys.stdout,
+        options.bars,
+        options.use_pylab,
+        options.glyphs,
+        options.debug_dump_points,
+    )
 
 
 if __name__ == "__main__":
-    rows, cols, input_fh, output_fh, draw_bars, use_pylab, use_glyphs, debug_dump_points = parse_options()
+    (
+        rows,
+        cols,
+        input_fh,
+        output_fh,
+        draw_bars,
+        use_pylab,
+        use_glyphs,
+        debug_dump_points,
+    ) = parse_options()
     points = getinput(input_fh)
     if debug_dump_points:
         print points
@@ -193,4 +220,3 @@ if __name__ == "__main__":
         ascii_scatter(output_fh, points, rows, cols, draw_bars, use_glyphs)
     else:
         pylab_scatter(points, draw_bars)
-
