@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import decimal
-import itertools
 import math
 import os
 import sys
@@ -63,7 +62,7 @@ def getinput(input_fh):
 
 def transform(points, rows, cols):
     ys = points.keys()
-    xs = list(itertools.chain([x.keys()[0] for x in points.values()]))
+    xs = [list(x.keys())[0] for x in points.values()]
 
     min_y, max_y = min(ys), max(ys)
     min_x, max_x = min(xs), max(xs)
@@ -104,7 +103,7 @@ def dump_points(
     use_glyphs=True,
 ):
     ys = points.keys()
-    xs = list(itertools.chain([x.keys()[0] for x in points.values()]))
+    xs = [list(x.keys())[0] for x in points.values()]
 
     min_y, max_y = min(ys), max(ys)
     min_x, max_x = min(xs), max(xs)
@@ -172,7 +171,7 @@ def pylab_scatter(points, draw_bars=False):
     # FUTURE: implement draw_bars=True, perhaps like
     # http://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg03309.html
     ys = points.keys()
-    xs = list(itertools.chain([x.keys()[0] for x in points.values()]))
+    xs = [list(x.keys())[0] for x in points.values()]
     import pylab
 
     pylab.scatter(xs, ys)
@@ -215,7 +214,7 @@ if __name__ == "__main__":
     ) = parse_options()
     points = getinput(input_fh)
     if debug_dump_points:
-        print points
+        print(points)
     if not use_pylab:
         ascii_scatter(output_fh, points, rows, cols, draw_bars, use_glyphs)
     else:
