@@ -10,7 +10,8 @@ from optparse import OptionParser
 print_html = "html2ps | /usr/bin/lp -d %s"
 
 
-DEFAULT_TITLE="Buzzword Bingo!"
+DEFAULT_TITLE = "Buzzword Bingo!"
+
 
 def generate_html(word_lists, size=5, title=None, sheet_id=""):
     if title is None:
@@ -25,10 +26,10 @@ def generate_html(word_lists, size=5, title=None, sheet_id=""):
     for word_list in word_lists:
         cells = []
         random.shuffle(word_list)
-        word_list = word_list[:size * size]
+        word_list = word_list[: size * size]
 
         for i in range(size):
-            cells.append(word_list[i * size:(i + 1) * size])
+            cells.append(word_list[i * size : (i + 1) * size])
 
         if size % 2 != 0:
             mid_idx = size / 2
@@ -40,13 +41,16 @@ def generate_html(word_lists, size=5, title=None, sheet_id=""):
         row_html = "<tr>\n"
         for multi_cell in itertools.izip(*multi_row):
             row_html += '<td width="%d%%" height="%d%%">%s</td>' % (
-                (100 / size), (100 / size),
-                "<br>".join(multi_cell))
+                (100 / size),
+                (100 / size),
+                "<br>".join(multi_cell),
+            )
         row_html += "</tr>\n"
         return row_html
 
-    rows_html = [multi_row_to_html(multi_row)
-                 for multi_row in itertools.izip(*multi_rows)]
+    rows_html = [
+        multi_row_to_html(multi_row) for multi_row in itertools.izip(*multi_rows)
+    ]
 
     return """<html>
     <head>
@@ -99,20 +103,30 @@ Rules / Comments:
 
 
     </body>
-    </html>""" % {"title": title,
-                  "sheet_id": sheet_id,
-                  "rows": "\n".join(rows_html)}
+    </html>""" % {
+        "title": title,
+        "sheet_id": sheet_id,
+        "rows": "\n".join(rows_html),
+    }
 
 
 def main():
     LPDEST = "LPDEST"
 
     parser = OptionParser()
-    parser.add_option('--print', action='store_true', help="Print table", dest='do_print')
-    parser.add_option('--printer', default=LPDEST, help="Printer to print to")
-    parser.add_option('--size', default=5, help="cells per row/column (should be an odd number and less than or equal to the square root of the number of words you're providing)")
-    parser.add_option('--title', default=DEFAULT_TITLE, help="title of generated matrix")
-    parser.add_option('--sheet-id', default="", help="optional ID to add to sheet")
+    parser.add_option(
+        "--print", action="store_true", help="Print table", dest="do_print"
+    )
+    parser.add_option("--printer", default=LPDEST, help="Printer to print to")
+    parser.add_option(
+        "--size",
+        default=5,
+        help="cells per row/column (should be an odd number and less than or equal to the square root of the number of words you're providing)",
+    )
+    parser.add_option(
+        "--title", default=DEFAULT_TITLE, help="title of generated matrix"
+    )
+    parser.add_option("--sheet-id", default="", help="optional ID to add to sheet")
     options, args = parser.parse_args()
 
     word_lists = []
@@ -123,12 +137,16 @@ def main():
             fh = open(filename)
         word_lists.append([line.strip() for line in fh.readlines()])
 
-    html = generate_html(word_lists, size=options.size, title=options.title, sheet_id=options.sheet_id)
+    html = generate_html(
+        word_lists, size=options.size, title=options.title, sheet_id=options.sheet_id
+    )
 
     if options.do_print:
         if options.printer == LPDEST:
             options.printer = os.environ.get(LPDEST)
-        printer = subprocess.Popen(print_html % options.printer, shell=True, stdin=subprocess.PIPE)
+        printer = subprocess.Popen(
+            print_html % options.printer, shell=True, stdin=subprocess.PIPE
+        )
         print >> printer.stdin, html
         printer.stdin.close()
         printer.wait()
@@ -136,6 +154,5 @@ def main():
         print html
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())
-
