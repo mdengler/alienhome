@@ -1,4 +1,4 @@
-#! /usr/local/bin/python
+#! /usr/bin/env python
 
 import itertools
 import os
@@ -32,24 +32,24 @@ def generate_html(word_lists, size=5, title=None, sheet_id=""):
             cells.append(word_list[i * size : (i + 1) * size])
 
         if size % 2 != 0:
-            mid_idx = size / 2
+            mid_idx = size // 2
             cells[mid_idx][mid_idx] = "<b>BINGO!</b>"
 
         multi_rows.append(cells)
 
     def multi_row_to_html(multi_row):
         row_html = "<tr>\n"
-        for multi_cell in itertools.izip(*multi_row):
+        for multi_cell in zip(*multi_row):
             row_html += '<td width="%d%%" height="%d%%">%s</td>' % (
-                (100 / size),
-                (100 / size),
+                (100 // size),
+                (100 // size),
                 "<br>".join(multi_cell),
             )
         row_html += "</tr>\n"
         return row_html
 
     rows_html = [
-        multi_row_to_html(multi_row) for multi_row in itertools.izip(*multi_rows)
+        multi_row_to_html(multi_row) for multi_row in zip(*multi_rows)
     ]
 
     return """<html>
@@ -147,11 +147,12 @@ def main():
         printer = subprocess.Popen(
             print_html % options.printer, shell=True, stdin=subprocess.PIPE
         )
-        print >> printer.stdin, html
+        printer.stdin.write(html)
+        printer.stdin.write("\n")
         printer.stdin.close()
         printer.wait()
     else:
-        print html
+        print(html)
 
 
 if __name__ == "__main__":
