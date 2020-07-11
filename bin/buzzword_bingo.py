@@ -113,7 +113,7 @@ Rules / Comments:
 def main():
     LPDEST = "LPDEST"
 
-    parser = OptionParser()
+    parser = OptionParser("usage: %prog [options] input_words_file [, input_words_file ...")
     parser.add_option(
         "--print", action="store_true", help="Print table", dest="do_print"
     )
@@ -128,6 +128,10 @@ def main():
     )
     parser.add_option("--sheet-id", default="", help="optional ID to add to sheet")
     options, args = parser.parse_args()
+
+    if not args:
+        parser.print_help()
+        return 1
 
     word_lists = []
     for filename in args:
