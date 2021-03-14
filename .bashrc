@@ -124,7 +124,12 @@ export EDITOR=~/bin/editor
 export PYTHONSTARTUP=~/.pythonrc
 export PYTHONIOENCODING=utf-8
 
-export PS1='\[\033[1;34m\](\A) \W \$ \[\033[m\]'
+# Prompts:
+## basic
+# export PS1='\[\033[1;34m\](\A) \W \$ \[\033[m\]'
+## a nice `root` one, with bright red background
+#export PS1='\[\033[41;1;37m\]\D{%Y%m%d-%H:%M.%S} \u\[\033[0m\]\[\033[1;37m\]@\[\033[1;33m\]\h\[\033[1;36m\] \[\033[1;31m\]\W\[\033[m\] \[\033[1;34m\]▶\[\033[m\] \$ \[\033[m\]'
+# normal user
 export PS1='\[\033[1;34m\]\D{%Y%m%d-%H:%M.%S}\[\033[0m\] \[\033[1;34m\]\u\[\033[1;37m\]@\[\033[1;33m\]\h\[\033[1;36m\] \[\033[1;31m\]\W\[\033[m\] \[\033[1;34m\]▶\[\033[m\] \$ \[\033[m\]'
 
 
