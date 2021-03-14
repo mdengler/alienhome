@@ -34,6 +34,8 @@ alias cp="cp -i"
 
 alias psc='ps xawf -eo pid,user,cgroup,args'
 
+alias start=xdg-open
+
 # from http://www.catonmat.net/blog/git-aliases
 # also see:
 #   http://www.robo47.net/blog/208-Git-Aliases-Submodules-and-Symfony
