@@ -3,7 +3,7 @@
 set -e
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-ROOT=$(readlink "${DIR}/.."hh)
+ROOT=$(readlink -f "${DIR}/..")
 cd "${ROOT}"
 
 timestamp="$(date +%Y%m%d%H%M%S)"
