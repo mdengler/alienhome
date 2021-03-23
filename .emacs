@@ -109,7 +109,6 @@
  '(message-sendmail-envelope-from (quote header))
  '(message-sendmail-f-is-evil t)
  '(message-user-fqdn "martindengler.com")
- '(mode-line-format nil)
  '(next-line-add-newlines nil)
  '(nrepl-message-colors
    (quote
