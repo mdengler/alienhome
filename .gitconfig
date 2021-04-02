@@ -18,6 +18,31 @@
     ui = auto
 [bz]
 	browser = google-chrome
+
+
+[push]
+	default = matching
+
+
+[alias]
+    logup = git log --reverse --stat --patch @{upstream}..
+    reup = git rebase -i @{upstream}^
+    update = git stash && git fetch --all && git pull --rebase && git stash pop
+    up = update
+
+    gl = log --oneline --graph --date-order --decorate --pretty=format:'%Creset %Cgreen%h %Creset%C(bold white) %s %C(bold black)by%C(reset) %C(cyan)%an%Creset (%ar) %C(yellow) %d %Cred %ad' --branches
+    ggg = gl
+    gg = !gl --color=always | head -50
+    g = !gl --color=always | head -10
+
+    log2 = log --oneline --graph --date-order --decorate --pretty=format:'%Creset %Cgreen%h %Creset%C(bold white) %s %C(bold black)by%C(reset) %C(cyan)%an%Creset (%ar) %C(yellow) %d %Cred %ad'
+    log3 = log --oneline --graph --date-order --decorate --pretty=format:'%Creset %Cgreen%h %Creset%C(bold white) %s %C(bold black)by%C(reset) %C(cyan)%an%Creset (%ar) %C(yellow) %d %Cred %ad' --branches
+	ctags = !.git/hooks/ctags
+
+[pack]
+    packSizeLimit = 333m
+
+
 [diff "lisp"]
     xfuncname="^(\\((def|test).*)$"
 [diff "clj"]
@@ -34,12 +59,6 @@
 [diff "word"]
     binary = true
     textconv = docx2txt.sh
-[push]
-	default = matching
-[alias]
-    log2 = log --oneline --graph --date-order --decorate --pretty=format:'%Creset %Cgreen%h %Creset%C(bold white) %s %C(bold black)by%C(reset) %C(cyan)%an%Creset (%ar) %C(yellow) %d %Cred %ad'
-    log3 = log --oneline --graph --date-order --decorate --pretty=format:'%Creset %Cgreen%h %Creset%C(bold white) %s %C(bold black)by%C(reset) %C(cyan)%an%Creset (%ar) %C(yellow) %d %Cred %ad' --branches
-	ctags = !.git/hooks/ctags
 
 
 [user]
@@ -51,5 +70,3 @@
 	templatedir = ~/.git_template
 [credential "https://github.com"]
 	username = mdengler
-[pack]
-    packSizeLimit = 333m
