@@ -4,6 +4,10 @@
 
 [core]
     autocrlf = false
+    hideDotFiles = dotGitOnly
+    logallrefupdates = true
+    safecrlf = warn
+    whitespace = trailing-space,space-before-tab,cr-at-eol
 
 
 [giggle]
