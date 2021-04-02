@@ -1,16 +1,15 @@
 [core]
     autocrlf = false
-[user]
-	name = Martin Dengler
-	email = martin@martindengler.com
+
+
 [giggle]
 	compact-mode = false
 	main-window-maximized = true
 	main-window-geometry = 0x0+0+0
 [rerere]
 	enabled = 1
-[sendemail]
-    bcc = martin@martindengler.com
+
+
 [color]
     ui = auto
 [bz]
@@ -38,6 +37,12 @@
     log3 = log --oneline --graph --date-order --decorate --pretty=format:'%Creset %Cgreen%h %Creset%C(bold white) %s %C(bold black)by%C(reset) %C(cyan)%an%Creset (%ar) %C(yellow) %d %Cred %ad' --branches
 	ctags = !.git/hooks/ctags
 
+
+[user]
+	name = Martin Dengler
+	email = martin@martindengler.com
+[sendemail]
+    bcc = martin@martindengler.com
 [init]
 	templatedir = ~/.git_template
 [credential "https://github.com"]
