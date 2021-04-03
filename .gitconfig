@@ -38,13 +38,8 @@
     update = git stash && git fetch --all && git pull --rebase && git stash pop
     up = update
 
-    gl = log --oneline --graph --date-order --decorate --pretty=format:'%Creset %Cgreen%h %Creset%C(bold white) %s %C(bold black)by%C(reset) %C(cyan)%an%Creset (%ar) %C(yellow) %d %Cred %ad' --branches
-    ggg = gl
-    gg = !gl --color=always | head -50
-    g = !gl --color=always | head -10
-
     log2 = log --oneline --graph --date-order --decorate --pretty=format:'%Creset %Cgreen%h %Creset%C(bold white) %s %C(bold black)by%C(reset) %C(cyan)%an%Creset (%ar) %C(yellow) %d %Cred %ad'
-    log3 = log --oneline --graph --date-order --decorate --pretty=format:'%Creset %Cgreen%h %Creset%C(bold white) %s %C(bold black)by%C(reset) %C(cyan)%an%Creset (%ar) %C(yellow) %d %Cred %ad' --branches
+    log3 = log --oneline --graph --date-order --decorate --pretty=format:'%Creset %Cgreen%h %Creset%C(bold white) %s %C(bold black)by%C(reset) %C(cyan)%an%Creset (%ar) %C(yellow) %d %Cred %ad' --branches  # see 'gl' alias in .bashrc
 	ctags = !.git/hooks/ctags
 
 [pack]

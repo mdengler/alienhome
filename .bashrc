@@ -43,7 +43,7 @@ alias start=xdg-open
 #   http://volnitsky.com/project/git-prompt
 alias ga='git add'
 alias gd='git diff --stat'
-alias gl="git log --oneline --graph --date-order --decorate --pretty=format:'%Creset %Cgreen%h %Creset%C(bold white) %s %C(bold black)by%C(reset) %C(cyan)%an%Creset (%ar) %C(yellow) %d %Cred %ad' --branches"
+alias gl="git log --oneline --graph --date-order --decorate --pretty=format:'%Creset %Cgreen%h %Creset%C(bold white) %s %C(bold black)by%C(reset) %C(cyan)%an%Creset (%ar) %C(yellow) %d %Cred %ad' --branches"  # see 'log3' alias in .gitconfig
 alias ggg=gl
 alias gg='gl --color=always | head -50'
 alias g='gl --color=always | head -10'
