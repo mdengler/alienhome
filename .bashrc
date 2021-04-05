@@ -2,6 +2,9 @@
 
 # User specific aliases and functions
 
+
+[[ $TERM == "tramp" ]] && PS1='$ ' && return
+
 # Source global definitions
 if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
