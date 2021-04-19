@@ -45,6 +45,9 @@
 [pack]
     packSizeLimit = 333m
 
+[diff]
+    colorMoved = dimmed-zebra
+
 
 [diff "lisp"]
     xfuncname="^(\\((def|test).*)$"
