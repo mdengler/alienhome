@@ -8,7 +8,8 @@ else:
     try:
         readline.read_history_file(histfile)
     except IOError as msg:
-        print(msg)
+        if "No such file" not in str(msg):
+            print(msg)
         pass
     import atexit
     atexit.register(readline.write_history_file, histfile)
