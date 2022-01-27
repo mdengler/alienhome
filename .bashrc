@@ -121,9 +121,6 @@ if [ -e .bashrc.d/`hostname` ] ; then
 fi
 
 
-
-export EDITOR=~/bin/editor
-
 export PYTHONSTARTUP=~/.pythonrc
 export PYTHONIOENCODING=utf-8
 
@@ -132,15 +129,23 @@ export PYTHONIOENCODING=utf-8
 # export PS1='\[\033[1;34m\](\A) \W \$ \[\033[m\]'
 ## a nice `root` one, with bright red background
 #export PS1='\[\033[41;1;37m\]\D{%Y%m%d-%H:%M.%S} \u\[\033[0m\]\[\033[1;37m\]@\[\033[1;33m\]\h\[\033[1;36m\] \[\033[1;31m\]\W\[\033[m\] \[\033[1;34m\]▶\[\033[m\] \$ \[\033[m\]'
-# normal user
-export PS1='\[\033[1;34m\]\D{%Y%m%d-%H:%M.%S}\[\033[0m\] \[\033[1;34m\]\u\[\033[1;37m\]@\[\033[1;33m\]\h\[\033[1;36m\] \[\033[1;31m\]\W\[\033[m\] \[\033[1;34m\]▶\[\033[m\] \$ \[\033[m\]'
 
+if [ "${LOGNAME}" == "martin" ] ; then
+    export EDITOR=~/bin/editor
 
-# Auto-tmux invocation. From screen instructions at
-# http://taint.org/wk/RemoteLoginAutoScreen
-if [ "$TERM" != "dumb" -a "$TERM" != "cygwin" -a "$PS1" != "" -a "${STARTED_SCREEN:-x}" = x -a -z "$TMUX" -a -x ~/bin/tmx -a -n "$(type -p tmux)" ]
-then
-  STARTED_SCREEN=1 ; export STARTED_SCREEN
-  TERM=xterm-256color ~/bin/tmx ${HOSTNAME:-$(hostname)} || echo "tmux finished. continuing with normal bash startup"
+    export PS1='\[\033[1;34m\]\D{%Y%m%d-%H:%M.%S}\[\033[0m\] \[\033[1;34m\]\u\[\033[1;37m\]@\[\033[1;33m\]\h\[\033[1;36m\] \[\033[1;31m\]\W\[\033[m\] \[\033[1;34m\]▶\[\033[m\] \$ \[\033[m\]'
+
+    # Auto-tmux invocation. From screen instructions at
+    # http://taint.org/wk/RemoteLoginAutoScreen
+    if [ "$TERM" != "dumb" -a "$TERM" != "cygwin" -a "$PS1" != "" -a "${STARTED_SCREEN:-x}" = x -a -z "$TMUX" -a -x ~/bin/tmx -a -n "$(type -p tmux)" ]
+    then
+      STARTED_SCREEN=1 ; export STARTED_SCREEN
+      TERM=xterm-256color ~/bin/tmx ${HOSTNAME:-$(hostname)} || echo "tmux finished. continuing with normal bash startup"
+    fi
+    # [end of auto-screen snippet]
+
+else
+    export PS1='\[\033[1;32m\]\D{%Y%m%d-%H:%M.%S}\[\033[0m\] \[\033[1;32m\]\u\[\033[1;37m\]@\[\033[1;37m\]\h\[\033[1;36m\] \[\033[1;31m\]\W\[\033[m\] \[\033[1;34m\]▶\[\033[m\] \$ \[\033[m\]'
 fi
-# [end of auto-screen snippet]
+
+
