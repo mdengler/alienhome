@@ -29,7 +29,7 @@
 
 
 [push]
-	default = matching
+	default = current
 
 
 [alias]
