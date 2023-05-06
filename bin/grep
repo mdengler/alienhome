@@ -1,0 +1,3 @@
+#!/bin/sh
+export PATH=/usr/bin
+exec grep --color=auto --devices=skip "$@"
