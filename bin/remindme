@@ -15,8 +15,29 @@ import dateutil.parser
 import os
 import pwd
 import sys
+try:
+   import io
+   from subprocess import Popen, PIPE
+   def popen3(cmd):
+      p = Popen(cmd,
+                shell=True,
+                stdin=PIPE,
+                stdout=PIPE,
+                stderr=PIPE,
+                close_fds=True)
+      return [io.TextIOWrapper(s, errors='backslashencode')
+              for s in (p.stdin, p.stdout, p.stderr)]
+except ImportError:
+   from os import popen3
 
 args = sys.argv[1:]
+
+def usage_and_exit():
+   print(__doc__)
+   sys.exit(1)
+
+if not args:
+   usage_and_exit()
 
 if args[0] == "at" or args[0] == "on":
    args = args[1:]
@@ -49,9 +70,10 @@ mail_cmd = "#!/bin/sh\necho | mail -s '%s' %s" % (" ".join(mail_parts), my_usern
 
 os.chdir("/")
 
-at_stdin, at_stdout, at_stderr = os.popen3(at_cmd)
+at_stdin, at_stdout, at_stderr = popen3(at_cmd)
 at_stdin.write(mail_cmd)
 at_stdin.write(os.linesep)
+at_stdin.write("notify-send -t 30 REMINDER '%s'%s" % (" ".join(mail_parts), os.linesep))
 at_stdin.close()
 
 at_stdout = at_stdout.read()
