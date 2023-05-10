@@ -49,17 +49,28 @@ toidx = None
 if "to" in args:
    toidx = args.index("to")
 
-if aboutidx == -1 and toidx == -1:
-   print __doc__
-   sys.exit(1)
+#if aboutidx in (None, 0, -1) and toidx in (None, 0, -1):
+if toidx in (None, -1):
+   usage_and_exit()
+elif toidx == 0:
+   parts_split = 0
+   at_parts = list("now + 3 hours".split())
+else:
+   parts_split = min(filter(None, (aboutidx, toidx)))
+   at_parts = args[:parts_split]
+   at_parts = " ".join(at_parts).strip().split()
 
-parts_split = min(filter(None, (aboutidx, toidx))) # FUTURE: a bit too fragile
+at_parts_fuzzy_meaning = {
+   "in": "now +",
+   "soon": "now + 10 minutes",
+   "later": "now + 3 hours",
+   }
 
-at_parts = args[:parts_split]
-at_parts = " ".join(at_parts).strip().split()
-if at_parts[0] == "in":
-   at_parts[0] = "now"
-   at_parts.insert(1, "+")
+if (meaning := at_parts_fuzzy_meaning.get(at_parts[0], None)):
+   meaning = meaning.split(" ")
+   anchor, offset_spec = meaning[0], meaning[1:]
+   at_parts = [anchor] + offset_spec + at_parts[1:]
+
 at_cmd = "at %s" % (" ".join(at_parts))
 
 my_uid = os.geteuid()
