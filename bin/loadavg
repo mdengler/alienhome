@@ -1,0 +1,15 @@
+#!/bin/sh
+SPARK=~/src/sparkC/spark
+if [ -e $SPARK ] ; then
+    ~/src/sparkC/spark 0 $(tr ' ' '\n' < /proc/loadavg | head -3) 4 | cut -c2-4 | tr '\n' ' '
+    cut -d" " -f2 /proc/loadavg
+    #    cut -d" " -f4- /proc/loadavg
+    # Why I don't think the 4th & 5th fields are useful: read from `man procfs`:
+    # /proc/loadavg
+    #   1-3:  The first three fields in this file are load average figures giving the number of jobs in the run queue (state R) or waiting for disk I/O (state D) averaged over 1, 5, and 15 minutes.  They are the same as the load average  numbers  given  by uptime(1) and other programs.
+    #     4:  The fourth field consists of two numbers separated by a slash (/).  The first of these is the number of currently runnable kernel scheduling entities (processes, threads).  The value after the slash is the number of kernel scheduling entities that currently exist on the system.
+    #     5:  The fifth field is the PID of the process that was most recently created on the system.
+
+else
+    cut -d" " -f1-3 /proc/loadavg
+fi
