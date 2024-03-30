@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+POWER_SYSFS=/sys/class/power_supply
+
+SPARK=~/src/sparkC/spark
+BATTERY=$(\ls -1 ${POWER_SYSFS} | grep BAT | tail -1)
+[ -z "$BATTERY" ] && exit 0
+BATTERY=${POWER_SYSFS}/$BATTERY
+
+POWER_DEVS=$(\ls ${POWER_SYSFS} | wc -l)
+AC_DEVS=$(\ls ${POWER_SYSFS} | grep 'AC\|ADP')
+AC_DEVS_COUNT=$(\ls ${POWER_SYSFS} | grep 'AC\|ADP' | wc -l)
+
+DISPLAY_STRING="${DISPLAY_STRING:-}"
+BATTERY_PERCENTAGE=$(( 100 * $(< $BATTERY/energy_now) / $(< $BATTERY/energy_full ) ))
+
+
+[ ! -d ${POWER_SYSFS} ] && echo $AC_POWER && exit 0
+[ "0" = "$POWER_DEVS" ] && echo $AC_POWER && exit 0
+if [ "0" != "$AC_DEVS_COUNT" ] ; then
+    for dev in $(\ls ${POWER_SYSFS} | grep 'AC\|ADP') ; do
+        if [ -e "$POWER_SYSFS/$dev/online" ] ; then
+            if [ "0" != $(< $POWER_SYSFS/$dev/online) ] ; then
+                DISPLAY_STRING="⚡"
+            fi
+        fi
+    done
+fi
+
+if [ -z "$DISPLAY_STRING" ] ; then
+    if [ $BATTERY_PERCENTAGE -lt 15 ] ; then
+        DISPLAY_STRING="😱"
+    else
+        DISPLAY_STRING="⏚"
+    fi
+fi
+
+if [ -e $SPARK ] ; then
+    BATTERY_PERCENTAGE="$(~/src/sparkC/spark 0 $BATTERY_PERCENTAGE 100 | cut -c2) ${BATTERY_PERCENTAGE}%"
+fi
+
+echo ${DISPLAY_STRING}${BATTERY_PERCENTAGE}
