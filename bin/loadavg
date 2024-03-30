@@ -1,7 +1,7 @@
 #!/bin/sh
-SPARK=~/src/sparkC/spark
+SPARK=~/bin/spark  # see ~/src/spark or sparkC
 if [ -e $SPARK ] ; then
-    ~/src/sparkC/spark 0 $(tr ' ' '\n' < /proc/loadavg | head -3) 4 | cut -c2-4 | tr '\n' ' '
+    "${SPARK}" 0 $(tr ' ' '\n' < /proc/loadavg | head -3) 4 | cut -c2-4 | tr '\n' ' '
     cut -d" " -f2 /proc/loadavg
     #    cut -d" " -f4- /proc/loadavg
     # Why I don't think the 4th & 5th fields are useful: read from `man procfs`:
