@@ -132,7 +132,9 @@ export PYTHONUNBUFFERED=true
 ## a nice `root` one, with bright red background
 #export PS1='\[\033[41;1;37m\]\D{%Y%m%d-%H:%M.%S} \u\[\033[0m\]\[\033[1;37m\]@\[\033[1;33m\]\h\[\033[1;36m\] \[\033[1;31m\]\W\[\033[m\] \[\033[1;34m\]▶\[\033[m\] \$ \[\033[m\]'
 
-if [ "${LOGNAME}" == "martin" ] ; then
+if [ "${LOGNAME:-$(whoami)}" == "root" ] ; then
+    export PS1='\[\033[1;41m\]\[\033[1;33m\]\D{%Y%m%d-%H:%M.%S}\[\033[0m\] \[\033[1;41m\]\[\033[1;39m\]\u\[\033[1;37m\]@\[\033[1;33m\]\h\[\033[1;36m\] \[\033[1;31m\]\W\[\033[m\] \$ \[\033[m\]'
+elif [ "${LOGNAME}" == "martin" ] ; then
     export EDITOR=~/bin/editor
 
     export PS1='\[\033[1;34m\]\D{%Y%m%d-%H:%M.%S}\[\033[0m\] \[\033[1;34m\]\u\[\033[1;37m\]@\[\033[1;33m\]\h\[\033[1;36m\] \[\033[1;31m\]\W\[\033[m\] \[\033[1;34m\]▶\[\033[m\] \$ \[\033[m\]'
