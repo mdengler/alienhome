@@ -124,6 +124,7 @@ fi
 
 export PYTHONSTARTUP=~/.pythonrc
 export PYTHONIOENCODING=utf-8
+export PYTHONUNBUFFERED=true
 
 # Prompts:
 ## basic
