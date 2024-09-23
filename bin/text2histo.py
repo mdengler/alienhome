@@ -144,7 +144,7 @@ def print_histogram_bins(bin_contents, max_bar_width=None):
     else:
         width = 50
 
-    width_normalizer = width / float(max([size for s, e, size in bin_contents]))
+    width_normalizer = width / float(max(size for s, e, size in bin_contents))
 
     bin_start_and_ends = functools.reduce(
         lambda a, b: a + b, [[s, e] for s, e, size in bin_contents], []
