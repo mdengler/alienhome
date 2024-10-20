@@ -7,7 +7,7 @@ else:
     histfile = os.path.join(os.path.expanduser("~"), ".pythonhist")
     try:
         readline.read_history_file(histfile)
-    except IOError as msg:
+    except (IOError, FileNotFoundError, OSError) as msg:
         if "No such file" not in str(msg):
             print(msg)
         pass
