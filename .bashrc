@@ -39,6 +39,7 @@ alias psc='ps xawf -eo pid,user,cgroup,args'
 
 alias start=xdg-open
 alias lessgrep='less -SR -p '
+export LESS=-XS
 
 # from http://www.catonmat.net/blog/git-aliases
 # also see:
