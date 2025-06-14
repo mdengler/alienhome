@@ -30,6 +30,13 @@ export IGNOREEOF=1
 export PATH=$HOME/.local/bin:$PATH
 export PATH=$HOME/bin:$PATH
 
+[ -e /usr/share/gocode ] &&
+    export GOROOT=/usr/share/gocode &&
+    export GOPATH=$HOME/go &&
+    export PATH=${PATH}:${GOPATH}/bin:${GOROOT}/bin
+
+export AWS_VAULT_PROMPT=pass
+
 alias ls="ls --color -F"
 alias rm="rm -i"
 alias mv="mv -i"
