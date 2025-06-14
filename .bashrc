@@ -38,8 +38,10 @@ alias cp="cp -i"
 alias psc='ps xawf -eo pid,user,cgroup,args'
 
 alias start=xdg-open
-alias lessgrep='less -SR -p '
-export LESS=-XS
+alias lessgrep='less -SR --ignore-case --pattern='
+export LESS="-XS" # simple version
+export LESS="--chop-long-lines --no-init --exit-follow-on-close --window=-2 --RAW-CONTROL-CHARS --SILENT --quit-if-one-screen --mouse --no-histdups --use-color"  # complex version
+# export LESS=-S -X     -Q -F
 
 # from http://www.catonmat.net/blog/git-aliases
 # also see:
