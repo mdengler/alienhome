@@ -129,6 +129,23 @@ export PYTHONSTARTUP=~/.pythonrc
 export PYTHONIOENCODING=utf-8
 export PYTHONUNBUFFERED=true
 
+
+
+
+[ -e "$HOME/.foundry/bin" ] && export PATH="$PATH:/home/martin/.foundry/bin"
+
+[ -e "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
+
+
+# pnpm
+export PNPM_HOME="/home/martin/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
+
+
 # Prompts:
 ## basic
 # export PS1='\[\033[1;34m\](\A) \W \$ \[\033[m\]'
@@ -154,5 +171,4 @@ elif [ "${LOGNAME}" == "martin" ] ; then
 else
     export PS1='\[\033[1;32m\]\D{%Y%m%d-%H:%M.%S}\[\033[0m\] \[\033[1;32m\]\u\[\033[1;37m\]@\[\033[1;37m\]\h\[\033[1;36m\] \[\033[1;31m\]\W\[\033[m\] \[\033[1;34m\]▶\[\033[m\] \$ \[\033[m\]'
 fi
-
 
