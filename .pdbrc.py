@@ -10,7 +10,7 @@ def _pdbrc_init():
     prev_h_len = None
     try:
         readline.read_history_file(histfile)
-        h_len = readline.get_current_history_length()
+        prev_h_len = readline.get_current_history_length()
     except IOError:
         pass
     def save(prev_h_len, histfile):
