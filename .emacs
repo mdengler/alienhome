@@ -1,5 +1,3 @@
-(require 'cl)
-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -12,20 +10,18 @@
       ("^landscape$" "^pstricks$\\|^pst-\\|^psfrag$")
       "%(o?)dvips -t landscape %d -o && gv %f")
      ("^dvi$" "^pstricks$\\|^pst-\\|^psfrag$" "%(o?)dvips %d -o && gv %f")
-     ("^dvi$"
-      ("^a4\\(?:dutch\\|paper\\|wide\\)\\|sem-a4$" "^landscape$")
+     ("^dvi$" ("^a4\\(?:dutch\\|paper\\|wide\\)\\|sem-a4$" "^landscape$")
       "%(o?)xdvi %dS -paper a4r -s 0 %d")
-     ("^dvi$" "^a4\\(?:dutch\\|paper\\|wide\\)\\|sem-a4$" "%(o?)xdvi %dS -paper a4 %d")
-     ("^dvi$"
-      ("^a5\\(?:comb\\|paper\\)$" "^landscape$")
+     ("^dvi$" "^a4\\(?:dutch\\|paper\\|wide\\)\\|sem-a4$"
+      "%(o?)xdvi %dS -paper a4 %d")
+     ("^dvi$" ("^a5\\(?:comb\\|paper\\)$" "^landscape$")
       "%(o?)xdvi %dS -paper a5r -s 0 %d")
      ("^dvi$" "^a5\\(?:comb\\|paper\\)$" "%(o?)xdvi %dS -paper a5 %d")
      ("^dvi$" "^b5paper$" "%(o?)xdvi %dS -paper b5 %d")
      ("^dvi$" "^letterpaper$" "%(o?)xdvi %dS -paper us %d")
      ("^dvi$" "^legalpaper$" "%(o?)xdvi %dS -paper legal %d")
      ("^dvi$" "^executivepaper$" "%(o?)xdvi %dS -paper 7.25x10.5in %d")
-     ("^dvi$" "." "%(o?)xdvi %dS %d")
-     ("^pdf$" "" "evince %o")
+     ("^dvi$" "." "%(o?)xdvi %dS %d") ("^pdf$" "" "evince %o")
      ("^pdf$" "." "xpdf -remote %s -raise %o %(outpage)")
      ("^html?$" "." "netscape %o"))))
  '(auto-coding-alist
@@ -39,6 +35,12 @@
      ("/#[^/]+#\\'" . emacs-mule)
      ("tasksched-.*\\.xml\\'" . utf-16le-with-signature-dos))))
  '(auto-compression-mode t nil (jka-compr))
+ '(auto-save-file-name-transforms
+   '(("\\`/[^/]*:\\([^/]*/\\)*\\([^/]*\\)\\'" "/var/tmp/\\2" t)))
+ '(auto-save-interval 30)
+ '(auto-save-timeout 10)
+ '(backup-by-copying t)
+ '(backup-by-copying-when-linked t)
  '(blank-chars (quote tabs))
  '(blank-display-mappings nil)
  '(blink-cursor-mode nil)
@@ -49,21 +51,33 @@
  '(cider-repl-history-file \.cider_repl_hist)
  '(cider-repl-history-size 50000)
  '(column-number-mode t)
+ '(compose-mail-user-agent-warnings nil)
+ '(csv-align-max-width 80)
  '(current-language-environment "UTF-8")
  '(custom-enabled-themes (quote (tango-dark)))
  '(custom-safe-themes
-   (quote
-    ("ed317c0a3387be628a48c4bbdb316b4fa645a414838149069210b66dd521733f" "ecb9fe1d5b165a35499191a909b2b5710a52935614058b327a39bfbbb07c7dc8" "8abee8a14e028101f90a2d314f1b03bed1cde7fd3f1eb945ada6ffc15b1d7d65" "5999e12c8070b9090a2a1bbcd02ec28906e150bb2cdce5ace4f965c76cf30476" "868f73b5cf78e72ca2402e1d48675e49cc9a9619c5544af7bf216515d22b58e7" "1e4b0eec2a963c0edc06302e3e6d1fcd17a3056dd450deb26dc5d01377160f2e" "4c9ba94db23a0a3dea88ee80f41d9478c151b07cb6640b33bfc38be7c2415cc4" "1db337246ebc9c083be0d728f8d20913a0f46edc0a00277746ba411c149d7fe5" "bcc6775934c9adf5f3bd1f428326ce0dcd34d743a92df48c128e6438b815b44f" "67e998c3c23fe24ed0fb92b9de75011b92f35d3e89344157ae0d544d50a63a72" default)))
+   '("c2e1201bb538b68c0c1fdcf31771de3360263bd0e497d9ca8b7a32d5019f2fae"
+     "33ea268218b70aa106ba51a85fe976bfae9cf6931b18ceaf57159c558bbcd1e6"
+     "e6df46d5085fde0ad56a46ef69ebb388193080cc9819e2d6024c9c6e27388ba9"
+     "67e998c3c23fe24ed0fb92b9de75011b92f35d3e89344157ae0d544d50a63a72"
+     "8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26"
+     "40f6a7af0dfad67c0d4df2a1dd86175436d79fc69ea61614d668a635c2cd94ab" default))
  '(default-input-method "rfc1345")
+ '(delete-auto-save-files nil)
+ '(delete-old-versions t)
  '(delete-selection-mode t)
  '(describe-char-unidata-list
-   (quote
-    (name old-name general-category decomposition iso-10646-comment)))
+   '(name old-name general-category decomposition iso-10646-comment))
+ '(desktop-save-mode t)
  '(display-time-day-and-date t)
  '(display-time-mode t)
  '(epa-file-cache-passphrase-for-symmetric-encryption t)
  '(epa-file-inhibit-auto-save nil)
+ '(epg-debug t)
+ '(epg-gpg-program "gpg2")
+ '(epg-pinentry-mode 'loopback)
  '(fci-rule-color "gray14")
+ '(file-precious-flag t)
  '(fill-column 79)
  '(font-lock-maximum-decoration t)
  '(font-lock-mode t t (font-lock))
@@ -79,27 +93,47 @@
  '(gnus-inhibit-startup-message t)
  '(gnus-nntp-server nil)
  '(gnus-novice-user nil)
+ '(gnus-secondary-select-methods
+   '((nnimap "imap.gmail.com" (nnimap-server-port 993) (nnimap-stream ssl)
+             (nnmail-expiry-wait immediate))
+     (nnmaildir "local" (directory "~/.mail"))))
+ '(gnus-select-method '(nneething "/home/martin/doc"))
  '(gnus-treat-display-xface (quote head) t)
  '(gnus-visual
-   (quote
-    (summary-highlight group-highlight article-highlight mouse-face summary-menu group-menu article-menu tree-highlight menu highlight browse-menu server-menu page-marker tree-menu binary-menu pick-menu grouplens-menu)))
- '(graphviz-dot-preview-extension "png")
+   (quote (summary-highlight group-highlight article-highlight mouse-face summary-menu
+                             group-menu article-menu tree-highlight menu highlight
+                             browse-menu server-menu page-marker tree-menu
+                             binary-menu pick-menu grouplens-menu)))
+ '(gnutls-algorithm-priority "normal:-vers-tls1.3")
+ '(graphviz-dot-auto-preview-on-save t)
+ '(graphviz-dot-preview-extension "svg")
+ '(graphviz-dot-revert-delay 3)
  '(graphviz-dot-view-command "dotty %s")
  '(highlight-symbol-idle-delay 0)
  '(highlight-symbol-only-when-region-active-p t)
+ '(ido-mode 'buffer nil (ido))
  '(indent-tabs-mode nil)
- '(inferior-lisp-program "sbcl")
+ '(inferior-lisp-program "sbcl" t)
  '(inhibit-startup-echo-area-message "martin")
  '(inhibit-startup-screen t)
  '(initial-scratch-message nil)
+ '(ispell-silently-savep t)
  '(iswitchb-mode t)
+ '(kept-new-versions 5)
+ '(kept-old-versions 5)
  '(load-home-init-file t t)
  '(lpr-command "lpr")
- '(lpr-switches (quote ("-o media=a4" "-l")))
+ '(lpr-switches
+   (quote ("-o media=letter" "-o raw" "-o sides=two-sided-long-edge" "-o print-quality=5")))
  '(mail-envelope-from (quote header))
  '(mail-mode-hook (quote (flyspell-mode mail-abbrevs-setup)))
  '(mail-self-blind t)
  '(mail-specify-envelope-from t)
+ '(markdown-command "pandoc --standalone")
+ '(markdown-display-remote-images t)
+ '(markdown-enable-math t)
+ '(markdown-enable-wiki-links t)
+ '(markdown-use-pandoc-style-yaml-metadata t)
  '(menu-bar-mode nil)
  '(message-citation-line-format "On %a, %b %d %Y at %r, %f wrote:")
  '(message-citation-line-function (quote message-insert-formatted-citation-line))
@@ -109,18 +143,71 @@
  '(message-sendmail-envelope-from (quote header))
  '(message-sendmail-f-is-evil t)
  '(message-user-fqdn "martindengler.com")
+ '(mu4e-compose-signature-auto-include nil)
+ '(mu4e-drafts-folder "/Drafts")
+ '(mu4e-headers-date-format "%y-%m-%d %H:%M")
+ '(mu4e-headers-fields '((:flags . 3) (:date . 16) (:from . 14) (:subject)))
+ '(mu4e-headers-leave-behavior 'apply)
+ '(mu4e-headers-results-limit 1000)
+ '(mu4e-headers-skip-duplicates t)
+ '(mu4e-headers-visible-lines 20)
+ '(mu4e-html2text-command
+   "elinks -dump -dump-charset iso-8859-15 -default-mime-type text/html")
+ '(mu4e-maildir-shortcuts nil)
+ '(mu4e-mu-binary "/home/martin/bin/mu")
+ '(mu4e-my-email-addresses
+   '("martin@martindengler.com" "mdengler@gmail.com"
+     "martin.dengler@decuragroup.com" "mtd@sugarlabs.org" "mtd@ieee.org"
+     "Martin.T.Dengler.97@dartmouth.edu" "nosp@xades.com" "martin@xades.com"
+     "martin@iai.com.hk" "martin@martin.hk" "martin@xades.hk"
+     "martin@denglers.com" "root@martindengler.com"))
+ '(mu4e-refile-folder "/archive")
+ '(mu4e-search-results-limit 1000)
+ '(mu4e-search-skip-duplicates t)
+ '(mu4e-sent-folder "/Sent")
+ '(mu4e-show-images t)
+ '(mu4e-trash-folder "/Trash")
+ '(mu4e-update-interval 240)
+ '(mu4e-use-fancy-chars t)
+ '(mu4e-user-mail-address-list
+   '("martin@martindengler.com" "mdengler@gmail.com"
+     "martin.dengler@decuragroup.com" "mtd@sugarlabs.org" "mtd@ieee.org"
+     "Martin.T.Dengler.97@dartmouth.edu" "nosp@xades.com" "martin@xades.com"
+     "martin@iai.com.hk" "martin@martin.hk" "martin@xades.hk"
+     "martin@denglers.com" "root@martindengler.com"))
+ '(mu4e-view-date-format "%y-%m-%d %H:%M")
+ '(mu4e-view-show-addresses t)
+ '(mu4e-view-show-images t)
  '(next-line-add-newlines nil)
  '(nrepl-message-colors
    (quote
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
+ '(org-babel-load-languages (quote ((emacs-lisp . t) (dot . t))))
+ '(package-archives
+   '(("melpa-stable" . "https://melpa.org/packages/")
+     ("gnu" . "https://elpa.gnu.org/packages/")))
  '(package-selected-packages
-   (quote
-    (git-gutter+ ample-theme mu4e-maildirs-extension hippie-exp-ext highlight-symbol edit-server tango-2 tango-plus-theme tango-2-theme tangotango-theme anti-zenburn-theme simplezen zerodark-theme nzenburn-theme hc-zenburn-theme ample-zen-theme zencoding-mode color-theme-tangotango color-theme-tango color-theme-library color-theme-zenburn zen-and-art-theme zen-mode zenburn-theme color-theme zenburn)))
+   '(## anti-zenburn-theme apheleia auto-complete-exuberant-ctags bbdb blacken
+        cl-lib cl-lib-highlight cl-libify cl-print clojure-mode
+        color-theme-solarized color-theme-zenburn csv csv-mode d2-mode dad-joke
+        deft doneburn-theme dot-mode editorconfig ellama flycheck
+        flycheck-color-mode-line flycheck-pycheckers git-gutter+
+        git-gutter-fringe+ gitlab-ci-mode gitlab-ci-mode-flycheck
+        gitlab-pipeline gnuplot gptel graphviz-dot-mode highlight-symbol
+        impatient-mode magit-annex magit-gitflow magit-gptcommit
+        magit-org-todos magit-todos magit-tramp markdown-mode markdown-mode+
+        markdown-preview-eww markdown-preview-mode mu-cite mu4e
+        mu4e-maildirs-extension mu4e-overview mu4e-views ox-pandoc ox-tufte
+        pandoc-mode pet python-black shr skewer-mode unicode-fonts
+        url-http-oauth w3m zeitgeist zenburn zenburn-theme))
  '(paren-mode (quote sexp) nil (paren))
- '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838")))
  '(pr-ps-printer-alist (quote ((default "lpr" nil "-P" ""))))
+ '(pr-txt-printer-alist (quote ((default "lpr" nil ""))))
  '(ps-paper-type (quote a4))
+ '(ps-paper-type (quote letter))
  '(ps-printer-name nil)
+ '(python-shell-interpreter "uv")
+ '(python-shell-interpreter-args "run python -i")
  '(rcirc-server-alist
    (quote
     (("irc.freenode.net" :channels
@@ -131,6 +218,11 @@
  '(safe-local-variable-values
    (quote
     ((coding-system . utf-8)
+     (encoding . utf-8)
+     (eval add-hook 'before-save-hook #'python-black-buffer nil t)
+     (eval add-hook 'before-save-hook #'clang-format-buffer nil t)
+     (package-lint-main-file . "llm.el")
+     (rpm-change-log-uses-utc . t)
      (rpm-change-log-uses-utc . t))))
  '(save-place-mode t nil (saveplace))
  '(save-place-skip-check-regexp
@@ -147,18 +239,18 @@
  '(smooth-scroll-margin 3)
  '(smtpmail-debug-info t)
  '(smtpmail-smtp-server "mail.xades.com")
- '(smtpmail-smtp-service 25)
+ '(smtpmail-smtp-service 587)
+ '(smtpmail-stream-type (quote starttls))
  '(speedbar-default-position (quote right))
  '(speedbar-track-mouse-flag t)
  '(speedbar-use-images nil)
  '(speedbar-verbosity-level 2)
  '(tab-width 4)
- '(text-mode-hook
-   (quote
-    (turn-on-auto-fill text-mode-hook-identify flyspell-mode)))
+ '(text-mode-hook '(auto-fill-mode text-mode-hook-identify))
  '(tool-bar-mode nil)
  '(transient-mark-mode t)
  '(truncate-lines nil)
+ '(user-full-name "Martin T Dengler")
  '(user-mail-address "martin@martindengler.com")
  '(vc-annotate-background "#3b3b3b")
  '(vc-annotate-color-map
@@ -183,6 +275,7 @@
      (360 . "#DC8CC3"))))
  '(vc-annotate-very-old-color "#DC8CC3" t)
  '(w3m-use-cookies t)
+ '(warning-suppress-types '((comp)))
  '(winner-mode t nil (winner))
  '(zen-encumbered-urls
    (quote
@@ -197,10 +290,15 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(blank-tab-face ((((class mono)) :inverse-video t) (t (:background "Red" :foreground "White"))) t)
+ '(blank-tab-face ((((class mono)) :inverse-video t) (t (:background "Red" :foreground "White"))))
  '(font-lock-doc-string-face ((((class color) (background light)) (:foreground "orange"))))
  '(font-lock-string-face ((((class color) (background light)) (:foreground "darkgreen"))))
- '(highlight-symbol-face ((t (:background "orange"))))
+ '(highlight-symbol-face ((t (:background "sienna"))))
+ '(markdown-header-face ((t (:inherit font-lock-function-name-face :weight bold))))
+ '(markdown-header-face-1 ((t (:inherit font-lock-keyword-face :height 1.0))))
+ '(markdown-header-face-2 ((t (:inherit font-lock-type-face :height 1.0))))
+ '(markdown-header-face-3 ((t (:inherit font-lock-variable-name-face :height 1.0))))
+ '(rst-level-1 ((t (:background "green"))))
  '(show-paren-match ((((class color) (background light)) (:background "green"))))
  '(trailing-whitespace ((((class color) (background light)) (:background "lightyellow")))))
 
@@ -392,10 +490,11 @@
    '(( "From" . "no.?reply\\|DAEMON\\|daemon\\|facebookmail\\|twitter")))
   )
 
+
 (with-library blank-mode ())
 
 ;; from http://emacs-fu.blogspot.com/2009/01/e-mail-with-emacs-using-mutt.html
-(with-library cl
+(with-library cl-lib
   (with-library post
     (add-hook 'mail-mode-hook 'post-mode)))
 
@@ -427,8 +526,34 @@
 (with-library edit-server
   (edit-server-start))
 
-(with-library fci-mode
-  (add-hook 'python-mode-hook fci-mode))
+(with-library editorconfig
+  (editorconfig-mode 1))
+
+(with-library epa-file
+  (epa-file-enable))
+
+(with-library fill-column-indicator
+  (add-hook 'python-mode-hook 'fci-mode))
+
+; http://emacs.1067599.n8.nabble.com/Emacs-as-an-external-flowed-text-editor-td60049.html
+(with-library flow-fill
+  (defun mtd-fill-flowed ()
+    "Call fill-flowed in flow-fill.el."
+    (interactive)
+    (fill-flowed)))
+
+(with-library flycheck
+  (add-hook 'python-mode-hook 'flycheck-mode))
+
+(with-library magit
+      (with-library git-gutter+
+        (global-set-key "\C-xC" 'git-gutter+-stage-and-commit)
+        (add-hook 'conf-mode-hook 'git-gutter+-mode)
+        (add-hook 'conf-toml-mode-hook 'git-gutter+-mode)
+        (add-hook 'python-mode-hook 'git-gutter+-mode)))
+
+;(with-library git-gutter-fringe+
+;  (add-hook 'python-mode-hook 'git-gutter-fringe+-mode))
 
 (with-library graphviz-dot-mode ())
 
@@ -442,23 +567,45 @@
 
 (with-library htmlize ())
 
-(with-library iswitchb
-  (global-set-key "\C-xb" 'iswitchb-buffer))
+;; (with-library iswitchb
+;;   (iswitchb-mode)
+;;   (global-set-key "\C-xb" 'iswitchb-buffer))
 
+(with-library ido-mode ())
 
 (with-library linum ())
 
+(with-library markdown-mode
+    (add-to-list 'auto-mode-alist '("todo$" . markdown-mode))
+    (add-to-list 'auto-mode-alist '(".plan$" . markdown-mode))
+    (add-to-list 'auto-mode-alist '(".project$" . markdown-mode))
+    (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
+    (add-to-list 'auto-mode-alist '("\\.rst$" . markdown-mode))
+    (add-to-list 'auto-mode-alist '("\\.txt$" . markdown-mode)))
+(with-library markdown-mode+ ())
+
 (with-library mu4e
-  (require 'mu4e-maildirs-extension)
+
+  ;; from https://github.com/djcb/mu/issues/569
+  (add-hook 'mu4e-compose-mode-hook
+            (defun cpb-compose-setup ()
+              "Use hard newlines, so outgoing mails will have format=flowed."
+              (use-hard-newlines t 'guess)))
+
+  ;; (require 'mu4e-maildirs-extension)
   (mu4e-maildirs-extension))
+
+(with-library octave
+  (add-to-list 'auto-mode-alist '("\\.m$" . octave-mode)))
 
 (with-library org ())
 
 (with-library package
-  (add-to-list 'package-archives
-               '("marmalade" . "http://marmalade-repo.org/packages/"))
-  (add-to-list 'package-archives
-               '("melpa" . "http://melpa.milkbox.net/packages/") t)
+  ;; list is in customize from emacs-26
+  ;; (add-to-list 'package-archives
+  ;;              '("marmalade" . "http://marmalade-repo.org/packages/"))
+  ;; (add-to-list 'package-archives
+  ;;              '("melpa" . "http://stable.melpa.org/packages/"))
   (package-initialize))
 
 (with-library parenface ())
@@ -553,6 +700,14 @@
 
 (with-library zeitgeist ())
 
+(with-library smartparens ())
+
+(with-library svg-mode-line-themes
+  (smt/enable)
+  (smt/set-theme 'diesel)
+  (set-face-attribute 'mode-line nil :box nil)
+  (set-face-attribute 'mode-line-inactive nil :box nil))
+
 ;; probably should be the last library loaded
 (with-library ffap (ffap-bindings))
 
@@ -583,11 +738,24 @@
               (local-set-key [(control down)] 'slime-repl-next-input)))
 ;; (setq REPL-mode-hook ())
 
+(add-hook 'inferior-python-mode-hook
+          '(lambda ()
+             (local-set-key [(control n)] 'py-next-statement)
+             (local-set-key [(control p)] 'py-previous-statement)
+             (local-set-key [(control next)] 'py-next-statement)
+             (local-set-key [(control prior)] 'py-previous-statement)
+             (local-set-key [(meta n)] 'comint-next-matching-input-from-input)
+             (local-set-key [(meta p)] 'comint-previous-matching-input-from-input)
+             (local-set-key [(meta next)] 'comint-next-matching-input-from-input)
+             (local-set-key [(meta prior)] 'comint-previous-matching-input-from-input)))
+;; (setq inferior-python-mode-hook ())
+
 (add-hook 'python-mode-hook
           '(lambda ()
              (local-set-key [(control next)] 'py-next-statement)
              (local-set-key [(control prior)] 'py-previous-statement)))
 ;; (setq python-mode-hook ())
+
 
 (add-hook 'comint-mode-hook
           '(lambda ()
@@ -612,9 +780,11 @@
 ;; from http://www.vinc17.org/mutt/index.en.html
 (defun mtd-mutt-ff-hook ()
   ;; mutt buffer name example: "/tmp/mutt-sun-617-6486"
-  (when (string-match "mutt-.*\\(-[0-9]+\\)+"
+  ;(message (format "mtd-mutt-ff-hook: buffer-file-name is %s" (buffer-file-name)))
+  (when (string-match "mutt-.*\\(-[a-z0-9]+\\)+"
                       (file-name-nondirectory (buffer-file-name)))
     (set (make-local-variable 'backup-inhibited) t)
+    (message (format "mtd-mutt-ff-hook: fill-column is %s." fill-column))
     ;; The following code is executed only when composing messages
     ;; (new messages or replies), not when editing messages (which
     ;; start with "From ") from the mailbox.
@@ -625,9 +795,17 @@
       (search-forward "\n\n" nil t)
       (message (format "mtd-mutt-ff-hook: point is %s" (point)))
       )
-    (mail-mode)))
+    (mail-mode)
+    ;(enriched-mode)
+    (setq fill-column (point-max))
+    (message (format "mtd-mutt-ff-hook: ENDING fill-column is %s." fill-column))
+    ))
 ;; (remove-hook 'find-file-hook 'mtd-mutt-ff-hook)
 (add-hook 'find-file-hook 'mtd-mutt-ff-hook)
+(add-to-list 'auto-mode-alist '("mutt-" . mtd-mutt-ff-hook))
+;;(setq auto-mode-alist (delete '("/mutt-" . mtd-mutt-ff-hook) auto-mode-alist))
+;;(setq auto-mode-alist (delete '("mutt-" . mtd-mutt-ff-hook) auto-mode-alist))
+;;(add-to-list 'auto-mode-alist '("mutt-" . mtd-mutt-ff-hook))
 
 
 
@@ -928,7 +1106,38 @@
     (insert-file-contents (buffer-file-name))
     (set-visited-file-modtime (visited-file-modtime))
     (set-buffer-modified-p nil)))
-(setq revert-buffer-function 'revert-buffer-keep-undo)
+;(setq revert-buffer-function 'revert-buffer-keep-undo)
+;(setq revert-buffer-function 'revert-buffer--default)
+
+
+
+;; X-Uniform-Type-Identifier: com.apple.mail-note
+(defun apple-note-to-text-hook ()
+  "convert apple note html to text for editing"
+  ;(when (eq major-mode 'org-mode)
+  ;  (shell-command-to-string (format "your-script-name %s" buffer-file-name))))
+)
+(defun apple-note-from-text-hook ()
+  "convert apple note html to text for editing"
+  ;(when (eq major-mode 'org-mode)
+  ;  (shell-command-to-string (format "your-script-name %s" buffer-file-name))))
+)
+; (add-hook 'after-save-hook #'apple-note-to-text)
+
+
 
 ;eval $(cat $(ls -atr ~/.dbus/session-bus/* | tail -1) | grep -v ^# | sed -e 's/^/export /' ) && EMACS_LOAD_LIBS=1 TERM=xterm-256-color GDK_RGBA=0 emacs -nw
 ;(dbus-init-bus :session)
+(put 'upcase-region 'disabled nil)
+
+
+; disable the "ding" behavior of isearch-wrap-pause during macro execution, as explained in this debian bug: https://debbugs.gnu.org/cgi/bugreport.cgi?bug=66149#19
+(defadvice kmacro-call-macro (around align-regexp-with-spaces activate)
+  (let ((isearch-wrap-pause 'no-ding))
+    ad-do-it))
+
+
+
+(fset 'markdown-macro-code-ify-symbol-at-point
+      (kmacro-lambda-form [?\M-b ?\C-  ?\M-f ?\C-w ?` ?\C-y ?`] 0 "%d"))
+(put 'dired-find-alternate-file 'disabled nil)
