@@ -46,7 +46,7 @@ if [[ "$1" == "ls" ]]; then
     exit
 fi
 
-base_session="$1"
+export base_session="$1"
 # This actually works without the trim() on all systems except OSX
 tmux_nb=$(trim `tmux-list-sessions | grep -c "^$base_session$"`)
 if [[ "$tmux_nb" == "0" ]]; then
@@ -54,7 +54,6 @@ if [[ "$tmux_nb" == "0" ]]; then
 
     # we separate 'new-session' and 'attach' to allow .tmux.conf
     # commands to create the new session first with the right name
-    # (which is, after all, a simple convention so easily shared),
     # which will (perversely) then cause this new-session command to
     # exit with an error.  Despite this error, a new session with
     # exactly that name has been created.  Then we can happily attach
