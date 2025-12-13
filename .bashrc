@@ -171,6 +171,7 @@ elif [ "${LOGNAME}" == "martin" ] ; then
     if [ "$TERM" != "dumb" -a "$TERM" != "cygwin" -a "$PS1" != "" -a "${STARTED_SCREEN:-x}" = x -a -z "$TMUX" -a -x ~/bin/tmx -a -n "$(type -p tmux)" ]
     then
       STARTED_SCREEN=1 ; export STARTED_SCREEN
+      export hostname_default=${hostname_default:-$(hostname)}
       session_default=$(echo ${HOSTNAME:-${hostname_default}} | cut -d. -f1)
       TERM=xterm-256color ~/bin/tmx ${session_name:-${session_default}} || echo "tmux finished. continuing with normal bash startup"
     fi
