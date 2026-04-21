@@ -1,0 +1,6 @@
+#!/usr/bin/bash
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+NAME=${NAME:-nice-mtd-$(date +%Y%m%d%H%M%S)}
+systemctl reset-failed --user ${NAME}-user.scope 2>/dev/null
+systemd-run --user --unit=${NAME}-user --slice=${NAME}.slice --scope --nice 19 /usr/bin/time -v "$@"
+( sleep 0.5; journalctl --user -u ${NAME}-user.scope -n 5 --no-pager -o cat ) &
